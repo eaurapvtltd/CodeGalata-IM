@@ -24,16 +24,24 @@ import {
 
 export default function DashboardPage() {
   const { college } = useAuth();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(() => {
+    return getCollegeDashboardStats(college?.id || 'demo-college-id');
+  });
 
   useEffect(() => {
-    if (college) {
-      const data = getCollegeDashboardStats(college.id);
-      setStats(data);
-    }
+    const data = getCollegeDashboardStats(college?.id || 'demo-college-id');
+    setStats(data);
   }, [college]);
 
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>

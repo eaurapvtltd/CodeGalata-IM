@@ -16,9 +16,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const CURRENT_COLLEGE_KEY = 'cg_active_college';
 
+const DEFAULT_DEMO_COLLEGE: College = {
+  id: 'demo-college-id',
+  collegeName: 'Code Galatta Institute of Technology',
+  collegeEmail: 'admin@cgit.edu',
+  password: '',
+  createdAt: new Date().toISOString(),
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [college, setCollege] = useState<College | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [college, setCollege] = useState<College | null>(DEFAULT_DEMO_COLLEGE);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // Seed initial demo data on first load
@@ -28,11 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const stored = localStorage.getItem(CURRENT_COLLEGE_KEY);
       if (stored) {
         setCollege(JSON.parse(stored));
+      } else {
+        setCollege(DEFAULT_DEMO_COLLEGE);
+        localStorage.setItem(CURRENT_COLLEGE_KEY, JSON.stringify(DEFAULT_DEMO_COLLEGE));
       }
     } catch (e) {
       console.error('Failed to load active college session', e);
-    } finally {
-      setIsLoading(false);
+      setCollege(DEFAULT_DEMO_COLLEGE);
     }
   }, []);
 

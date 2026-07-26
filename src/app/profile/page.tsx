@@ -8,12 +8,17 @@ import { Building, Mail, Calendar, ShieldCheck, User, GraduationCap, Code2, Laye
 
 export default function ProfilePage() {
   const { college } = useAuth();
+  const activeCollege = college || {
+    id: 'demo-college-id',
+    collegeName: 'Code Galatta Institute of Technology',
+    collegeEmail: 'admin@cgit.edu',
+    password: '',
+    createdAt: new Date().toISOString(),
+  };
 
-  if (!college) return null;
-
-  const stats = getCollegeDashboardStats(college.id);
-  const problems = getCollegeProblems(college.id);
-  const branches = getCollegeBranches(college.id);
+  const stats = getCollegeDashboardStats(activeCollege.id);
+  const problems = getCollegeProblems(activeCollege.id);
+  const branches = getCollegeBranches(activeCollege.id);
 
   return (
     <AdminLayout>
@@ -33,17 +38,17 @@ export default function ProfilePage() {
         <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-8 border-b border-zinc-100 dark:border-zinc-800">
             <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-emerald-600/20 shrink-0">
-              {college.collegeName.charAt(0).toUpperCase()}
+              {activeCollege.collegeName.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">{college.collegeName}</h2>
+                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">{activeCollege.collegeName}</h2>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" /> Verified
                 </span>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5" /> {college.collegeEmail}
+                <Mail className="w-3.5 h-3.5" /> {activeCollege.collegeEmail}
               </p>
             </div>
           </div>
@@ -57,20 +62,20 @@ export default function ProfilePage() {
                 <span className="flex items-center gap-2">
                   <Building className="w-4 h-4 text-emerald-500" /> College Name
                 </span>
-                <span className="font-semibold text-zinc-900 dark:text-white">{college.collegeName}</span>
+                <span className="font-semibold text-zinc-900 dark:text-white">{activeCollege.collegeName}</span>
               </div>
               <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
                 <span className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-emerald-500" /> College Email
                 </span>
-                <span className="font-semibold text-zinc-900 dark:text-white">{college.collegeEmail}</span>
+                <span className="font-semibold text-zinc-900 dark:text-white">{activeCollege.collegeEmail}</span>
               </div>
               <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
                 <span className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-emerald-500" /> Registered On
                 </span>
                 <span className="font-semibold text-zinc-900 dark:text-white">
-                  {new Date(college.createdAt).toLocaleDateString()}
+                  {new Date(activeCollege.createdAt).toLocaleDateString()}
                 </span>
               </div>
             </div>
