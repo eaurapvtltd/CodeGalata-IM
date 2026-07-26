@@ -9,7 +9,6 @@ import {
   GitFork, 
   Code2, 
   User, 
-  LogOut,
   GraduationCap,
   ChevronRight,
   BookOpen,
@@ -32,12 +31,7 @@ interface AdminSidebarProps {
 export function AdminSidebar({ isMobileOpen = false, onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { logout, college } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/auth/login');
-  };
+  const { college } = useAuth();
 
   const academicItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -149,16 +143,6 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile }: AdminSideb
         </div>
       </div>
 
-      {/* Footer / Logout */}
-      <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-200"
-        >
-          <LogOut className="w-4 h-4 text-red-500" />
-          <span>Logout Portal</span>
-        </button>
-      </div>
     </div>
   );
 

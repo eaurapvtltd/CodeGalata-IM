@@ -13,15 +13,8 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children, hideSidebar = false }: AdminLayoutProps) {
-  const { college, isLoading } = useAuth();
-  const router = useRouter();
+  const { isLoading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-
-  useEffect(() => {
-    if (!isLoading && !college) {
-      router.push('/auth/login');
-    }
-  }, [college, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -30,10 +23,6 @@ export function AdminLayout({ children, hideSidebar = false }: AdminLayoutProps)
         <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Loading Code Galatta Admin Portal...</p>
       </div>
     );
-  }
-
-  if (!college) {
-    return null; // Will redirect via useEffect
   }
 
   if (hideSidebar) {

@@ -10,14 +10,8 @@ export default function Home() {
   const { college, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (college) {
-        router.push('/dashboard');
-      } else {
-        router.push('/auth/login');
-      }
-    }
-  }, [college, isLoading, router]);
+    router.push('/dashboard');
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">

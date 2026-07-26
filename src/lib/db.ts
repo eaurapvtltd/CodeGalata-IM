@@ -342,6 +342,28 @@ export function createBranch(collegeId: string, branchName: string): Branch {
   return newBranch;
 }
 
+export function updateBranch(collegeId: string, branchId: string, updates: Partial<Branch>): Branch {
+  const allBranches = getStoredItem<Branch[]>(STORAGE_KEYS.BRANCHES, []);
+  const index = allBranches.findIndex(b => b.id === branchId && b.collegeId === collegeId);
+  if (index === -1) throw new Error('Branch not found.');
+  
+  const updated = { ...allBranches[index], ...updates };
+  allBranches[index] = updated;
+  setStoredItem(STORAGE_KEYS.BRANCHES, allBranches);
+  logAdminActivity(collegeId, 'batch', 'Branch Update', `Updated branch "${updated.branchName}"`);
+  return updated;
+}
+
+export function deleteBranch(collegeId: string, branchId: string): void {
+  const allBranches = getStoredItem<Branch[]>(STORAGE_KEYS.BRANCHES, []);
+  const target = allBranches.find(b => b.id === branchId && b.collegeId === collegeId);
+  if (!target) throw new Error('Branch not found.');
+  
+  const filtered = allBranches.filter(b => b.id !== branchId);
+  setStoredItem(STORAGE_KEYS.BRANCHES, filtered);
+  logAdminActivity(collegeId, 'batch', 'Branch Deletion', `Deleted branch "${target.branchName}"`);
+}
+
 export function getBranchBatches(branchId: string): Batch[] {
   const allBatches = getStoredItem<Batch[]>(STORAGE_KEYS.BATCHES, []);
   return allBatches.filter(b => b.branchId === branchId);
