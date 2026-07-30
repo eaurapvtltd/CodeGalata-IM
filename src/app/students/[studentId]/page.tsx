@@ -22,7 +22,8 @@ import {
   Calendar,
   Mail,
   Phone,
-  BookOpen
+  BookOpen,
+  Layers
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -131,6 +132,10 @@ export default function StudentDetailPage({ params }: { params: Promise<{ studen
                   </h1>
                   <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold">
                     {student.rollNo || 'REG100234'}
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-mono text-xs font-bold flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5" />
+                    Batch No: {student.batchName || (student.batchId ? student.batchId.replace('batch-', '').toUpperCase() : 'N/A')}
                   </span>
                   <span className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-xs font-semibold flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-zinc-400" />

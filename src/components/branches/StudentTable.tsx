@@ -27,7 +27,9 @@ export function StudentTable({ students }: StudentTableProps) {
         st.studentName.toLowerCase().includes(term) ||
         st.email.toLowerCase().includes(term) ||
         st.status.toLowerCase().includes(term) ||
-        st.cgpa.toString().includes(term)
+        st.cgpa.toString().includes(term) ||
+        (st.batchName && st.batchName.toLowerCase().includes(term)) ||
+        (st.batchId && st.batchId.toLowerCase().includes(term))
       );
     });
   }, [students, searchTerm]);
@@ -113,6 +115,7 @@ export function StudentTable({ students }: StudentTableProps) {
                       <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
+                  <th className="px-6 py-3.5">Batch No.</th>
                   <th 
                     onClick={() => handleSort('cgpa')}
                     className="px-6 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors"
@@ -151,6 +154,7 @@ export function StudentTable({ students }: StudentTableProps) {
                   const isActivated = st.status !== 'Not Activated';
                   const regOn = st.registeredOn || '17/07/2026, 11:22 pm';
                   const loginTime = st.lastLogin || '17/07/2026, 11:22 pm';
+                  const displayBatch = st.batchName || (st.batchId ? st.batchId.replace('batch-', '').toUpperCase() : 'N/A');
 
                   return (
                     <tr key={st.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
@@ -159,6 +163,11 @@ export function StudentTable({ students }: StudentTableProps) {
                       </td>
                       <td className="px-6 py-4 font-extrabold text-zinc-900 dark:text-zinc-100">
                         {st.studentName}
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-zinc-800 dark:text-zinc-200">
+                        <span className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs">
+                          {displayBatch}
+                        </span>
                       </td>
                       <td className="px-6 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
                         {st.cgpa.toFixed(2)}

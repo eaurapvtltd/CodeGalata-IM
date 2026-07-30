@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { CampusLeaderboard } from '@/components/dashboard/CampusLeaderboard';
 import { useAuth } from '@/context/AuthContext';
 import { getCollegeDashboardStats } from '@/lib/db';
 import { DashboardStats } from '@/lib/types';
@@ -281,9 +280,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* Campus Leaderboard Section */}
-        <CampusLeaderboard />
       </div>
     </AdminLayout>
   );

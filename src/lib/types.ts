@@ -41,6 +41,7 @@ export interface StudentSubmissionRecord {
 export interface Student {
   id: string;
   batchId: string;
+  batchName?: string;
   studentName: string;
   cgpa: number;
   email: string;

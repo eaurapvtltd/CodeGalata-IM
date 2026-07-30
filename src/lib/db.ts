@@ -342,6 +342,20 @@ export function createBranch(collegeId: string, branchName: string): Branch {
   return newBranch;
 }
 
+export function getBatchById(batchId: string): Batch | null {
+  const allBatches = getStoredItem<Batch[]>(STORAGE_KEYS.BATCHES, []);
+  return allBatches.find(b => b.id === batchId) || null;
+}
+
+export function getBatchName(batchId: string): string {
+  const batch = getBatchById(batchId);
+  if (batch) return batch.batchName;
+  if (batchId && batchId.startsWith('batch-')) {
+    return batchId.replace('batch-', '').toUpperCase();
+  }
+  return batchId || 'N/A';
+}
+
 export function getBranchBatches(branchId: string): Batch[] {
   const allBatches = getStoredItem<Batch[]>(STORAGE_KEYS.BATCHES, []);
   return allBatches.filter(b => b.branchId === branchId);
@@ -371,7 +385,10 @@ export function createBatch(collegeId: string, branchId: string, batchName: stri
 // Student API
 export function getBatchStudents(batchId: string): Student[] {
   const allStudents = getStoredItem<Student[]>(STORAGE_KEYS.STUDENTS, []);
-  return allStudents.filter(s => s.batchId === batchId);
+  const batchName = getBatchName(batchId);
+  return allStudents
+    .filter(s => s.batchId === batchId)
+    .map(s => ({ ...s, batchName: s.batchName || batchName }));
 }
 
 export function getAllCollegeStudents(collegeId: string): Student[] {
@@ -382,7 +399,9 @@ export function getAllCollegeStudents(collegeId: string): Student[] {
   const batchIds = collegeBatches.map(b => b.id);
   
   const allStudents = getStoredItem<Student[]>(STORAGE_KEYS.STUDENTS, []);
-  return allStudents.filter(s => batchIds.includes(s.batchId));
+  return allStudents
+    .filter(s => batchIds.includes(s.batchId))
+    .map(s => ({ ...s, batchName: s.batchName || getBatchName(s.batchId) }));
 }
 
 // Deep-Dive Individual Student Diagnostic Analytics Retriever
@@ -423,6 +442,7 @@ export function getStudentById(studentId: string): Student | null {
 
   return {
     ...student,
+    batchName: student.batchName || getBatchName(student.batchId),
     rollNo: student.rollNo || 'REG' + student.id.substring(3, 8).toUpperCase(),
     phone: student.phone || '9876543210',
     attendancePct: student.attendancePct || 88,
