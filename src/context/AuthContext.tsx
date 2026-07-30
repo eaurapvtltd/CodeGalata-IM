@@ -28,6 +28,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const stored = localStorage.getItem(CURRENT_COLLEGE_KEY);
       if (stored) {
         setCollege(JSON.parse(stored));
+      } else {
+        findCollegeByEmail('admin@cgit.edu').then((c) => {
+          if (c) {
+            setCollege(c);
+            localStorage.setItem(CURRENT_COLLEGE_KEY, JSON.stringify(c));
+          }
+        });
       }
     } catch (e) {
       console.error('Failed to load active college session', e);

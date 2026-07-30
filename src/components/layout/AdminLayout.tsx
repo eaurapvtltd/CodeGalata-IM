@@ -17,12 +17,6 @@ export function AdminLayout({ children, hideSidebar = false }: AdminLayoutProps)
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  useEffect(() => {
-    if (!isLoading && !college) {
-      router.push('/auth/login');
-    }
-  }, [college, isLoading, router]);
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center">
@@ -30,10 +24,6 @@ export function AdminLayout({ children, hideSidebar = false }: AdminLayoutProps)
         <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Loading Code Galatta Admin Portal...</p>
       </div>
     );
-  }
-
-  if (!college) {
-    return null; // Will redirect via useEffect
   }
 
   if (hideSidebar) {

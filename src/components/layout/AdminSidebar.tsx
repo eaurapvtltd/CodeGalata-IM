@@ -36,7 +36,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile }: AdminSideb
 
   const handleLogout = () => {
     logout();
-    router.push('/auth/login');
+    router.push('/dashboard');
   };
 
   const academicItems = [

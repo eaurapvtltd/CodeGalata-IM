@@ -11,13 +11,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading) {
-      if (college) {
-        router.push('/dashboard');
-      } else {
-        router.push('/auth/login');
-      }
+      router.push('/dashboard');
     }
-  }, [college, isLoading, router]);
+  }, [isLoading, router]);
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
