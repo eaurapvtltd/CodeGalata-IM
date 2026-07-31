@@ -322,66 +322,66 @@ export default function StudentsPage() {
               <p className="text-xs text-zinc-400 mt-1">Try resetting filters or adding a new student.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left">
-                <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800">
-                  <tr>
-                    <th className="px-6 py-3.5">Roll No</th>
-                    <th className="px-6 py-3.5">Student Name</th>
-                    <th className="px-6 py-3.5">Batch No.</th>
-                    <th className="px-6 py-3.5">CGPA</th>
-                    <th className="px-6 py-3.5">Email</th>
-                    <th className="px-6 py-3.5">Registered On</th>
-                    <th className="px-6 py-3.5">Last Login</th>
-                    <th className="px-6 py-3.5">Student Report</th>
-                    <th className="px-6 py-3.5 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-                  {filteredStudents.map((st) => {
-                    const regOn = st.registeredOn || '17/07/2026, 11:22 pm';
-                    const loginTime = st.lastLogin || '17/07/2026, 11:22 pm';
-                    const displayBatch = st.batchName || (st.batchId ? st.batchId.replace('batch-', '').toUpperCase() : 'N/A');
+            <div className="overflow-x-auto min-w-full">
+            <table className="w-full text-xs text-left whitespace-nowrap min-w-[950px]">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800 whitespace-nowrap">
+                <tr>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Roll No</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Student Name</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Batch No.</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">CGPA</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Email</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Registered On</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Last Login</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Student Report</th>
+                  <th className="px-5 py-3.5 text-right whitespace-nowrap">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 whitespace-nowrap">
+                {filteredStudents.map((st) => {
+                  const regOn = st.registeredOn || '17/07/2026, 11:22 pm';
+                  const loginTime = st.lastLogin || '17/07/2026, 11:22 pm';
+                  const displayBatch = st.batchName || (st.batchId ? st.batchId.replace('batch-', '').toUpperCase() : 'N/A');
 
-                    return (
-                      <tr key={st.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors group">
-                        <td className="px-6 py-4 font-mono font-bold text-zinc-500 dark:text-zinc-400">
-                          {st.rollNo || 'ROLL' + st.id.substring(3, 8).toUpperCase()}
-                        </td>
-                        <td className="px-6 py-4 font-extrabold text-zinc-900 dark:text-white">
-                          {st.studentName}
-                        </td>
-                        <td className="px-6 py-4 font-mono font-bold text-zinc-800 dark:text-zinc-200">
-                          <span className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs">
-                            {displayBatch}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                          {st.cgpa.toFixed(2)}
-                        </td>
-                        <td className="px-6 py-4 text-zinc-500">
-                          <span className="flex items-center gap-1.5">
-                            <Mail className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                            {st.email}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
-                          {regOn}
-                        </td>
-                        <td className="px-6 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
-                          {loginTime}
-                        </td>
-                      <td className="px-6 py-4">
+                  return (
+                    <tr key={st.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors group">
+                      <td className="px-5 py-4 font-mono font-bold text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                        {st.rollNo || 'ROLL' + st.id.substring(3, 8).toUpperCase()}
+                      </td>
+                      <td className="px-5 py-4 font-extrabold text-zinc-900 dark:text-white whitespace-nowrap">
+                        {st.studentName}
+                      </td>
+                      <td className="px-5 py-4 font-mono font-bold text-zinc-800 dark:text-zinc-200 whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-mono font-extrabold whitespace-nowrap inline-block shrink-0">
+                          {displayBatch}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                        {st.cgpa.toFixed(2)}
+                      </td>
+                      <td className="px-5 py-4 text-zinc-500 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 whitespace-nowrap">
+                          <Mail className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                          <span>{st.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
+                        {regOn}
+                      </td>
+                      <td className="px-5 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
+                        {loginTime}
+                      </td>
+                      <td className="px-5 py-4 whitespace-nowrap">
                         <Link 
                           href={`/students/${st.id}`} 
-                          className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs group-hover:scale-105"
+                          className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs group-hover:scale-105 whitespace-nowrap shrink-0"
                         >
-                          <BarChart3 className="w-3.5 h-3.5" />
-                          <span>View Full Report</span>
+                          <BarChart3 className="w-3.5 h-3.5 shrink-0" />
+                          <span className="whitespace-nowrap">View Full Report</span>
                         </Link>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
+                      <td className="px-5 py-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1 whitespace-nowrap">
                           <button
                             onClick={() => openEditModal(st)}
                             className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"

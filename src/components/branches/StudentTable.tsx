@@ -101,55 +101,55 @@ export function StudentTable({ students }: StudentTableProps) {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800">
+          <div className="overflow-x-auto min-w-full">
+            <table className="w-full text-xs text-left whitespace-nowrap min-w-[950px]">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800 whitespace-nowrap">
                 <tr>
-                  <th className="px-6 py-3.5">#</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">#</th>
                   <th 
                     onClick={() => handleSort('studentName')}
-                    className="px-6 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="px-5 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors whitespace-nowrap"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <span>Student Name</span>
-                      <ArrowUpDown className="w-3 h-3" />
+                      <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
-                  <th className="px-6 py-3.5">Batch No.</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Batch No.</th>
                   <th 
                     onClick={() => handleSort('cgpa')}
-                    className="px-6 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="px-5 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors whitespace-nowrap"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <span>CGPA</span>
-                      <ArrowUpDown className="w-3 h-3" />
+                      <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
                   <th 
                     onClick={() => handleSort('email')}
-                    className="px-6 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="px-5 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors whitespace-nowrap"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <span>Email</span>
-                      <ArrowUpDown className="w-3 h-3" />
+                      <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
-                  <th className="px-6 py-3.5">Role</th>
-                  <th className="px-6 py-3.5">Activated</th>
-                  <th className="px-6 py-3.5">Registered On</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Role</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Activated</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Registered On</th>
                   <th 
                     onClick={() => handleSort('status')}
-                    className="px-6 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="px-5 py-3.5 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-colors whitespace-nowrap"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <span>Last Login</span>
-                      <ArrowUpDown className="w-3 h-3" />
+                      <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
-                  <th className="px-6 py-3.5">Student Report</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Student Report</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 whitespace-nowrap">
                 {paginatedStudents.map((st, idx) => {
                   const isActivated = st.status !== 'Not Activated';
                   const regOn = st.registeredOn || '17/07/2026, 11:22 pm';
@@ -158,47 +158,49 @@ export function StudentTable({ students }: StudentTableProps) {
 
                   return (
                     <tr key={st.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
-                      <td className="px-6 py-4 text-zinc-400 font-mono">
+                      <td className="px-5 py-4 text-zinc-400 font-mono whitespace-nowrap">
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
-                      <td className="px-6 py-4 font-extrabold text-zinc-900 dark:text-zinc-100">
+                      <td className="px-5 py-4 font-extrabold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                         {st.studentName}
                       </td>
-                      <td className="px-6 py-4 font-mono font-bold text-zinc-800 dark:text-zinc-200">
-                        <span className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs">
+                      <td className="px-5 py-4 font-mono font-bold text-zinc-800 dark:text-zinc-200 whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-mono font-extrabold whitespace-nowrap inline-block shrink-0">
                           {displayBatch}
                         </span>
                       </td>
-                      <td className="px-6 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="px-5 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
                         {st.cgpa.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-zinc-400" />
-                        <span>{st.email}</span>
+                      <td className="px-5 py-4 text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 whitespace-nowrap">
+                          <Mail className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                          <span>{st.email}</span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4 font-mono font-extrabold text-zinc-900 dark:text-white text-xs uppercase">
+                      <td className="px-5 py-4 font-mono font-extrabold text-zinc-900 dark:text-white text-xs uppercase whitespace-nowrap">
                         {st.role || 'ADMIN'}
                       </td>
-                      <td className="px-6 py-4 font-bold text-xs">
+                      <td className="px-5 py-4 font-bold text-xs whitespace-nowrap">
                         {isActivated ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">Yes</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">Yes</span>
                         ) : (
-                          <span className="text-rose-500 font-bold">No</span>
+                          <span className="text-rose-500 font-bold whitespace-nowrap">No</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
+                      <td className="px-5 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
                         {regOn}
                       </td>
-                      <td className="px-6 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
+                      <td className="px-5 py-4 font-mono text-zinc-700 dark:text-zinc-300 text-xs whitespace-nowrap">
                         {loginTime}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-5 py-4 whitespace-nowrap">
                         <Link 
                           href={`/students/${st.id}`} 
-                          className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs hover:scale-105"
+                          className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs hover:scale-105 whitespace-nowrap shrink-0"
                         >
-                          <BarChart3 className="w-3.5 h-3.5" />
-                          <span>View Full Report</span>
+                          <BarChart3 className="w-3.5 h-3.5 shrink-0" />
+                          <span className="whitespace-nowrap">View Full Report</span>
                         </Link>
                       </td>
                     </tr>
