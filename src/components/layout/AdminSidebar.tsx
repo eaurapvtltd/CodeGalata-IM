@@ -42,6 +42,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile }: AdminSideb
   const academicItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Branches', href: '/branches', icon: GitFork },
+    { name: 'Courses', href: '/courses', icon: BookOpen },
     { name: 'Problem Setter', href: '/problem-setter', icon: Code2 },
     { name: 'Assignments', href: '/assignments', icon: BookOpen },
     { name: 'Students', href: '/students', icon: Users },

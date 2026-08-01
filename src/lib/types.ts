@@ -19,6 +19,20 @@ export interface Batch {
   createdAt: string;
 }
 
+export interface Course {
+  id: string;
+  collegeId: string;
+  code: string;
+  title: string;
+  credits: number;
+  semester: string;
+  branchCode: string;
+  instructor: string;
+  mappedBatches: string[];
+  studentCount: number;
+  createdAt: string;
+}
+
 export interface StudentTopicStat {
   topic: string;
   solved: number;

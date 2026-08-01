@@ -2,6 +2,7 @@ import {
   College, 
   Branch, 
   Batch, 
+  Course,
   Student, 
   Problem, 
   Activity, 
@@ -23,6 +24,7 @@ const STORAGE_KEYS = {
   COLLEGES: 'cg_colleges',
   BRANCHES: 'cg_branches',
   BATCHES: 'cg_batches',
+  COURSES: 'cg_courses',
   STUDENTS: 'cg_students',
   PROBLEMS: 'cg_problems',
   ACTIVITIES: 'cg_activities',
@@ -203,6 +205,75 @@ export function seedInitialDataIfNeeded(): void {
       }
     ];
     setStoredItem(STORAGE_KEYS.ASSIGNMENTS, demoAssignments);
+
+    const demoCourses: Course[] = [
+      {
+        id: 'crs-101',
+        collegeId: demoId,
+        code: 'CS-301',
+        title: 'Data Structures & Algorithms in C++',
+        credits: 4,
+        semester: 'Sem III',
+        branchCode: 'CSE',
+        instructor: 'Dr. K. Raman',
+        mappedBatches: ['CSE-A', 'CSE-B'],
+        studentCount: 64,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'crs-102',
+        collegeId: demoId,
+        code: 'CS-304',
+        title: 'Object-Oriented Software Design',
+        credits: 3,
+        semester: 'Sem IV',
+        branchCode: 'CSE',
+        instructor: 'Prof. S. Varma',
+        mappedBatches: ['CSE-A'],
+        studentCount: 32,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'crs-103',
+        collegeId: demoId,
+        code: 'AI-201',
+        title: 'Deep Learning & Neural Networks',
+        credits: 4,
+        semester: 'Sem V',
+        branchCode: 'AI',
+        instructor: 'Prof. Arvind Raman',
+        mappedBatches: ['AI-1'],
+        studentCount: 45,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'crs-104',
+        collegeId: demoId,
+        code: 'ML-302',
+        title: 'Statistical Machine Learning Patterns',
+        credits: 4,
+        semester: 'Sem V',
+        branchCode: 'AIML',
+        instructor: 'Dr. S. Sundaram',
+        mappedBatches: ['AIML-1'],
+        studentCount: 40,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'crs-105',
+        collegeId: demoId,
+        code: 'ECE-202',
+        title: 'Embedded Systems & Microcontrollers',
+        credits: 4,
+        semester: 'Sem IV',
+        branchCode: 'ECE',
+        instructor: 'Prof. M. Anitha',
+        mappedBatches: ['ECE-A'],
+        studentCount: 50,
+        createdAt: new Date().toISOString(),
+      },
+    ];
+    setStoredItem(STORAGE_KEYS.COURSES, demoCourses);
 
     const demoContests: Contest[] = [
       {
@@ -1114,5 +1185,59 @@ export function markFacultyMessagesAsRead(collegeId: string, facultyId: string):
     });
     setStoredItem(STORAGE_KEYS.FACULTY, updatedFaculty);
   }
+}
+
+// Course Management API
+export function getCollegeCourses(collegeId: string): Course[] {
+  const allCourses = getStoredItem<Course[]>(STORAGE_KEYS.COURSES, []);
+  return allCourses.filter(c => c.collegeId === collegeId);
+}
+
+export function createCourse(collegeId: string, params: {
+  code: string;
+  title: string;
+  credits?: number;
+  semester?: string;
+  branchCode: string;
+  instructor: string;
+  mappedBatches?: string[];
+}): Course {
+  const allCourses = getStoredItem<Course[]>(STORAGE_KEYS.COURSES, []);
+  const newCourse: Course = {
+    id: 'crs_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+    collegeId,
+    code: params.code.toUpperCase(),
+    title: params.title.trim(),
+    credits: Number(params.credits) || 4,
+    semester: params.semester || 'Sem III',
+    branchCode: params.branchCode,
+    instructor: params.instructor.trim() || 'Faculty Instructor',
+    mappedBatches: params.mappedBatches || [],
+    studentCount: 30,
+    createdAt: new Date().toISOString(),
+  };
+
+  setStoredItem(STORAGE_KEYS.COURSES, [newCourse, ...allCourses]);
+  logAdminActivity(collegeId, 'batch', 'Course Creation', `Mapped Course "${params.title}" (${params.code}) to ${params.branchCode}`);
+  return newCourse;
+}
+
+export function updateCourse(collegeId: string, courseId: string, params: Partial<Course>): Course {
+  const allCourses = getStoredItem<Course[]>(STORAGE_KEYS.COURSES, []);
+  const index = allCourses.findIndex(c => c.id === courseId && c.collegeId === collegeId);
+  if (index === -1) {
+    throw new Error('Course not found');
+  }
+
+  const updated = { ...allCourses[index], ...params };
+  allCourses[index] = updated;
+  setStoredItem(STORAGE_KEYS.COURSES, allCourses);
+  return updated;
+}
+
+export function deleteCourse(collegeId: string, courseId: string): void {
+  const allCourses = getStoredItem<Course[]>(STORAGE_KEYS.COURSES, []);
+  const filtered = allCourses.filter(c => !(c.id === courseId && c.collegeId === collegeId));
+  setStoredItem(STORAGE_KEYS.COURSES, filtered);
 }
 
