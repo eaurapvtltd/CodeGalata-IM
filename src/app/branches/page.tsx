@@ -116,7 +116,7 @@ export default function BranchesPage() {
               <div
                 key={branch.id}
                 onClick={() => router.push(`/branches/${branch.id}`)}
-                className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-xl hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all group relative overflow-hidden flex flex-col justify-between cursor-pointer"
+                className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-xl hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all group relative overflow-visible flex flex-col justify-between cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -124,19 +124,22 @@ export default function BranchesPage() {
                       {branch.branchName.substring(0, 3).toUpperCase()}
                     </div>
 
-                    <div className="relative">
+                    <div className="relative z-20" onClick={(e) => e.stopPropagation()}>
                       <button
+                        type="button"
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           setActiveDropdown(activeDropdown === branch.id ? null : branch.id);
                         }}
-                        className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors"
+                        className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-emerald-100 text-zinc-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95"
+                        title="Branch options"
                       >
-                        <MoreVertical className="w-5 h-5" />
+                        <MoreVertical className="w-5 h-5 pointer-events-none" />
                       </button>
 
                       {activeDropdown === branch.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg z-10 py-1 overflow-hidden" onClick={e => e.stopPropagation()}>
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-1.5" onClick={e => e.stopPropagation()}>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
