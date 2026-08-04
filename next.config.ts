@@ -1,0 +1,16 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/auth/:path*',
+        destination: '/dashboard',
+        permanent: false,
+      },
+    ];
+  },
+  /* config options here */
+};
+
+export default nextConfig;
