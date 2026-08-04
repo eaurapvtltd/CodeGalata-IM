@@ -16,9 +16,9 @@ export default function Home() {
   }, [isLoading, router]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
-      <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-3" />
-      <p className="text-sm font-medium text-zinc-400">Redirecting to Code Galatta Portal...</p>
+    <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center text-zinc-900">
+      <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mb-3" />
+      <p className="text-sm font-medium text-zinc-600">Redirecting to Code Galatta Portal...</p>
     </div>
   );
 }
