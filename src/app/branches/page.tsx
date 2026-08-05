@@ -127,15 +127,18 @@ export default function BranchesPage() {
                     <div className="relative z-20" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setActiveDropdown(activeDropdown === branch.id ? null : branch.id);
-                        }}
-                        className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-emerald-100 text-zinc-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95"
+                        className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-emerald-100 text-zinc-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95 relative"
                         title="Branch options"
                       >
-                        <MoreVertical className="w-5 h-5 pointer-events-none" />
+                        <MoreVertical className="w-5 h-5" />
+                        <div 
+                          className="absolute inset-0 z-10 cursor-pointer rounded-full"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveDropdown(activeDropdown === branch.id ? null : branch.id);
+                          }}
+                        />
                       </button>
 
                       {activeDropdown === branch.id && (
