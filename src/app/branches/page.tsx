@@ -139,7 +139,7 @@ export default function BranchesPage() {
                       </button>
 
                       {activeDropdown === branch.id && (
-                        <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-1.5" onClick={e => e.stopPropagation()}>
+                        <div className="absolute right-0 top-9 mt-0.5 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-1.5" onClick={e => e.stopPropagation()}>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
