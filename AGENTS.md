@@ -5,4 +5,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- END:nextjs-agent-rules -->
 
 ## Git Workflow Rule
-- STRICTLY push changes ONLY to the `main-debug` branch. Never push to `main`, `master`, or any other branch.
+- By default, push changes to the `main-debug` branch.
+- If the user explicitly approves pushing from `main-debug` to `main`, you may push to `main`.
