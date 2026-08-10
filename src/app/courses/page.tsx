@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useAuth } from '@/context/AuthContext';
+import { apiClient } from '@/lib/apiClient';
 import { 
   getCollegeCourses, 
   createCourse, 
@@ -58,9 +59,14 @@ export default function CoursesPage() {
   const [newCourseBranch, setNewCourseBranch] = useState('CSE');
   const [newCourseInstructor, setNewCourseInstructor] = useState('Dr. K. Raman');
 
-  const loadData = () => {
+  const loadData = async () => {
     if (!college) return;
-    setCourses(getCollegeCourses(college.id));
+    const apiCourses = await apiClient.courses.getAll(college.id);
+    if (apiCourses && apiCourses.length > 0) {
+      setCourses(apiCourses);
+    } else {
+      setCourses(getCollegeCourses(college.id));
+    }
     const brList = getCollegeBranches(college.id);
     setBranches(brList);
     if (brList.length > 0 && !newCourseBranch) {

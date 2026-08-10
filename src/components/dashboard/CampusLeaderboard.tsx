@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -91,10 +91,6 @@ export function CampusLeaderboard() {
 
   return (
     <div className="space-y-8 bg-gradient-to-b from-emerald-50/40 via-white to-white dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-900 p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm relative overflow-hidden">
-      {/* Decorative background vectors */}
-      <div className="absolute top-6 left-8 text-zinc-200 dark:text-zinc-800/40 font-mono text-3xl font-bold select-none pointer-events-none">{`{ }`}</div>
-      <div className="absolute top-6 right-8 text-zinc-200 dark:text-zinc-800/40 font-mono text-3xl font-bold select-none pointer-events-none">{`< />`}</div>
-
       {/* Section Header */}
       <div className="text-center space-y-2 max-w-xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/80 dark:bg-emerald-950/80 border border-emerald-300/60 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-bold text-[11px] uppercase tracking-wider">

@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
+import { useAuth } from '@/context/AuthContext';
+import { getAllCollegeStudents } from '@/lib/db';
+import { EmailService } from '@/lib/emailService';
 import { 
   Calendar, 
   Clock, 
@@ -21,14 +24,126 @@ import {
   Zap,
   Flame,
   Layers,
-  CheckCheck
+  CheckCheck,
+  Mail,
+  History,
+  Eye,
+  BarChart3
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type ApproachType = 'brute_force' | 'two_pointers' | 'optimal';
 type LanguageType = 'python' | 'cpp' | 'java' | 'c';
 
+interface DailyProblem {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  timeLimit: string;
+  rewardXp: number;
+  solvedCount: number;
+  accuracyPct: number;
+  avgTime: string;
+  description: string;
+  dateLabel?: string;
+}
+
+const DAILY_PROBLEMS: DailyProblem[] = [
+  {
+    id: 'daily-1',
+    title: 'Two Sum Problem',
+    difficulty: 'Easy',
+    timeLimit: '15 Min',
+    rewardXp: 50,
+    solvedCount: 3248,
+    accuracyPct: 91,
+    avgTime: '11m 30s',
+    description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to the target.',
+  },
+  {
+    id: 'daily-2',
+    title: 'Valid Anagram & Substrings',
+    difficulty: 'Easy',
+    timeLimit: '12 Min',
+    rewardXp: 40,
+    solvedCount: 2910,
+    accuracyPct: 88,
+    avgTime: '08m 45s',
+    description: 'Given two strings s and t, return true if t is an anagram of s, and false otherwise.',
+  },
+  {
+    id: 'daily-3',
+    title: 'Longest Substring Without Repeating Characters',
+    difficulty: 'Medium',
+    timeLimit: '20 Min',
+    rewardXp: 75,
+    solvedCount: 2140,
+    accuracyPct: 79,
+    avgTime: '16m 10s',
+    description: 'Find the length of the longest substring without repeating characters in a given string s.',
+  },
+  {
+    id: 'daily-4',
+    title: 'Container With Most Water',
+    difficulty: 'Medium',
+    timeLimit: '25 Min',
+    rewardXp: 80,
+    solvedCount: 1890,
+    accuracyPct: 76,
+    avgTime: '19m 20s',
+    description: 'Find two lines that together with the x-axis form a container containing maximum water volume.',
+  },
+  {
+    id: 'daily-5',
+    title: 'Binary Tree Level Order Traversal',
+    difficulty: 'Medium',
+    timeLimit: '20 Min',
+    rewardXp: 70,
+    solvedCount: 1650,
+    accuracyPct: 82,
+    avgTime: '14m 50s',
+    description: 'Return the level order traversal of a binary tree nodes values level by level from left to right.',
+  },
+  {
+    id: 'daily-6',
+    title: 'Reverse Linked List',
+    difficulty: 'Easy',
+    timeLimit: '10 Min',
+    rewardXp: 35,
+    solvedCount: 4120,
+    accuracyPct: 94,
+    avgTime: '06m 15s',
+    description: 'Given the head of a singly linked list, reverse the list and return its reversed head.',
+  },
+  {
+    id: 'daily-7',
+    title: 'Merge K Sorted Lists',
+    difficulty: 'Hard',
+    timeLimit: '35 Min',
+    rewardXp: 120,
+    solvedCount: 980,
+    accuracyPct: 62,
+    avgTime: '28m 40s',
+    description: 'You are given an array of k linked-lists. Merge all lists into one sorted linked-list and return it.',
+  },
+];
+
 export default function DailyChallengePage() {
+  const { college } = useAuth();
+  
+  // Dynamic rotation based on current day
+  const todayDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % DAILY_PROBLEMS.length;
+  const currentDailyChallenge = DAILY_PROBLEMS[todayDayIndex];
+
+  // History list of past daily challenges
+  const historyChallenges: DailyProblem[] = DAILY_PROBLEMS.map((prob, idx) => {
+    const daysAgo = (todayDayIndex - idx + DAILY_PROBLEMS.length) % DAILY_PROBLEMS.length;
+    let label = 'Today';
+    if (daysAgo === 1) label = 'Yesterday';
+    else if (daysAgo > 1) label = `${daysAgo} days ago`;
+    return { ...prob, dateLabel: label };
+  }).filter(p => p.dateLabel !== 'Today');
+
   // Real-time countdown timer to midnight reset
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   
@@ -67,7 +182,33 @@ export default function DailyChallengePage() {
   const formatTime = (num: number) => num.toString().padStart(2, '0');
   const timeString = `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`;
 
-  // Comprehensive Multi-Approach Solution Data (Brute Force, Two Pointers, Optimal Hash Map)
+  // Email Notification Dispatcher
+  const handleSendEmailNotification = async () => {
+    if (!college) {
+      toast.error('College authentication required.');
+      return;
+    }
+
+    try {
+      const students = getAllCollegeStudents(college.id);
+      if (students.length === 0) {
+        toast.error('No students found in roster to send emails to.');
+        return;
+      }
+
+      await EmailService.dispatchDailyChallengeNotification(
+        students,
+        college.collegeName,
+        currentDailyChallenge
+      );
+
+      toast.success(`📩 Daily Challenge "${currentDailyChallenge.title}" emailed to ${students.length} students!`);
+    } catch (err: any) {
+      toast.error('Failed to dispatch daily challenge notification email.');
+    }
+  };
+
+  // Comprehensive Multi-Approach Solution Data
   const solutionApproaches: Record<ApproachType, {
     name: string;
     badge: string;
@@ -167,7 +308,6 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
         python: `# Approach 2: Sorting + Two Pointers (O(N log N) Time, O(N) Space)
 
 def twoSum(nums: list[int], target: int) -> list[int]:
-    # Pair element values with their original indices
     indexed_nums = [(val, idx) for idx, val in enumerate(nums)]
     indexed_nums.sort()  # O(N log N)
     
@@ -342,7 +482,6 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
     *returnSize = 2;
     int* result = (int*)malloc(2 * sizeof(int));
     
-    // Efficient Hash lookup simulation
     for (int i = 0; i < numsSize; i++) {
         for (int j = i + 1; j < numsSize; j++) {
             if (nums[i] + nums[j] == target) {
@@ -377,8 +516,8 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
     setTestResult(null);
     setTimeout(() => {
       setIsSubmitting(false);
-      setTestResult('ACCEPTED: All 12/12 Evaluation Test Cases Passed! (+50 XP Added 🎉)');
-      toast.success('Congratulations! Challenge Solved! +50 XP Added to your profile.');
+      setTestResult(`ACCEPTED: All 12/12 Evaluation Test Cases Passed! (+${currentDailyChallenge.rewardXp} XP Added 🎉)`);
+      toast.success(`Congratulations! Challenge Solved! +${currentDailyChallenge.rewardXp} XP Added to your profile.`);
     }, 1200);
   };
 
@@ -404,7 +543,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
   return (
     <AdminLayout>
       <div className="space-y-8 max-w-7xl mx-auto pb-12">
-        {/* Top Announcement Banner (Matching Image Header) */}
+        {/* Top Announcement Banner */}
         <div className="text-center space-y-3 py-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-extrabold uppercase tracking-wider shadow-2xs">
             <Calendar className="w-4 h-4 text-emerald-500" />
@@ -421,9 +560,19 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto font-medium">
             A new challenge every day to keep your streak alive and your skills sharp.
           </p>
+
+          <div className="pt-2">
+            <button
+              onClick={handleSendEmailNotification}
+              className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all inline-flex items-center gap-2 cursor-pointer"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Notify Students via Email</span>
+            </button>
+          </div>
         </div>
 
-        {/* Main Grid Section (Matching Image Layout) */}
+        {/* Main Grid Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Today's Challenge Card (8 cols) */}
@@ -453,44 +602,41 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
-                      Two Sum Problem
+                      {currentDailyChallenge.title}
                     </h2>
-                    <span className="inline-block mt-1 px-3 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-extrabold">
-                      Easy
+                    <span className={`inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-mono font-extrabold ${
+                      currentDailyChallenge.difficulty === 'Easy' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400' :
+                      currentDailyChallenge.difficulty === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400' :
+                      'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400'
+                    }`}>
+                      {currentDailyChallenge.difficulty}
                     </span>
                   </div>
                 </div>
 
                 <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-sans">
-                  Given an array of integers <code className="px-1 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-emerald-600 dark:text-emerald-400">nums</code> and an integer <code className="px-1 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-emerald-600 dark:text-emerald-400">target</code>, return indices of the two numbers such that they add up to the target.
+                  {currentDailyChallenge.description}
                 </p>
               </div>
 
-              {/* 3D Calendar Vector Illustration (Matching Screenshot) */}
+              {/* 3D Calendar Vector Illustration */}
               <div className="md:col-span-5 flex justify-center">
                 <div className="relative w-44 h-44 flex items-center justify-center">
-                  {/* Outer pedestal glow */}
                   <div className="absolute inset-0 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 blur-xl animate-pulse" />
                   
-                  {/* SVG 3D Calendar Illustration */}
                   <svg className="w-40 h-40 drop-shadow-xl transform hover:scale-105 transition-transform" viewBox="0 0 200 200" fill="none">
-                    {/* Pedestal Base */}
                     <ellipse cx="100" cy="165" rx="75" ry="20" fill="#10b981" fillOpacity="0.25" />
                     <ellipse cx="100" cy="160" rx="65" ry="15" fill="#10b981" fillOpacity="0.4" />
                     
-                    {/* Calendar Body */}
                     <rect x="50" y="50" width="100" height="95" rx="18" fill="#10b981" />
                     <rect x="55" y="60" width="90" height="80" rx="14" fill="#34d399" />
                     
-                    {/* Calendar Binder Rings */}
                     <rect x="70" y="38" width="10" height="22" rx="5" fill="#047857" />
                     <rect x="95" y="38" width="10" height="22" rx="5" fill="#047857" />
                     <rect x="120" y="38" width="10" height="22" rx="5" fill="#047857" />
 
-                    {/* Code Symbol inside Calendar */}
                     <text x="100" y="112" textAnchor="middle" fill="white" fontSize="32" fontWeight="900" fontFamily="monospace">&lt;/&gt;</text>
                     
-                    {/* 3D Green Pencil Graphic */}
                     <g transform="translate(130, 80) rotate(35)">
                       <rect x="0" y="0" width="14" height="60" rx="4" fill="#059669" />
                       <polygon points="0,60 14,60 7,75" fill="#047857" />
@@ -500,7 +646,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               </div>
             </div>
 
-            {/* 3-Column Metrics Bar (Matching Image Layout) */}
+            {/* 3-Column Metrics Bar */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800/80">
               <div className="flex items-center gap-3 p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
@@ -508,7 +654,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                 </div>
                 <div>
                   <span className="block text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">Time Limit</span>
-                  <strong className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white font-mono">15 Min</strong>
+                  <strong className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white font-mono">{currentDailyChallenge.timeLimit}</strong>
                 </div>
               </div>
 
@@ -518,7 +664,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                 </div>
                 <div>
                   <span className="block text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">Reward</span>
-                  <strong className="text-xs sm:text-sm font-extrabold text-amber-600 dark:text-amber-400 font-mono">50 XP</strong>
+                  <strong className="text-xs sm:text-sm font-extrabold text-amber-600 dark:text-amber-400 font-mono">+{currentDailyChallenge.rewardXp} XP</strong>
                 </div>
               </div>
 
@@ -528,12 +674,12 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                 </div>
                 <div>
                   <span className="block text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">Solved Today</span>
-                  <strong className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white font-mono">3,248</strong>
+                  <strong className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white font-mono">{currentDailyChallenge.solvedCount.toLocaleString()}</strong>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons Row (Matching Image Layout) */}
+            {/* Action Buttons Row */}
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
               <button
                 onClick={() => setIsSolveModalOpen(true)}
@@ -557,11 +703,11 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
           {/* Right Column: Challenge Timer & Leaderboard (4 cols) */}
           <div className="lg:col-span-4 space-y-6">
             
-            {/* Top Card: Challenge Timer (Matching Image Radial Ring) */}
+            {/* Top Card: Challenge Timer */}
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4 text-center">
               <div className="flex items-center justify-center gap-2 text-xs font-mono font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
                 <Clock className="w-4 h-4 text-emerald-500" />
-                <span>CHALLENGE TIMER</span>
+                <span>NEXT CHALLENGE IN</span>
               </div>
 
               {/* Radial Donut Clock Ring */}
@@ -581,7 +727,6 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                   />
                 </svg>
 
-                {/* Real-time Ticking Clock Text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white font-mono tracking-tight">
                     {timeString}
@@ -593,14 +738,14 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               </div>
 
               <div className="pt-2">
-                <span className="text-xs text-zinc-400 font-medium block">Challenge resets in</span>
+                <span className="text-xs text-zinc-400 font-medium block">Challenge rotates in</span>
                 <span className="inline-block mt-1 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-xs font-bold">
                   {timeString}
                 </span>
               </div>
             </div>
 
-            {/* Bottom Card: Today's Leaderboard (Matching Image Layout) */}
+            {/* Bottom Card: Today's Leaderboard */}
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/80 pb-3">
                 <div className="flex items-center gap-2 text-xs font-mono font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
@@ -643,6 +788,90 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
 
         </div>
 
+        {/* Daily Challenge History & Solved Analytics Section */}
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+            <div>
+              <h3 className="text-lg font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
+                <History className="w-5 h-5 text-emerald-500" />
+                <span>Daily Challenge History & Solved Analytics</span>
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                Explore past daily challenges, member completion counts, and full multi-language solutions.
+              </p>
+            </div>
+
+            <button
+              onClick={handleSendEmailNotification}
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2 self-start sm:self-center shrink-0 cursor-pointer"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Email Today&apos;s Challenge</span>
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left whitespace-nowrap">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800">
+                <tr>
+                  <th className="px-5 py-3.5">Date</th>
+                  <th className="px-5 py-3.5">Challenge Title</th>
+                  <th className="px-5 py-3.5">Difficulty</th>
+                  <th className="px-5 py-3.5">Reward XP</th>
+                  <th className="px-5 py-3.5">Members Solved</th>
+                  <th className="px-5 py-3.5">Accuracy Rate</th>
+                  <th className="px-5 py-3.5">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
+                {historyChallenges.map((item) => (
+                  <tr key={item.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
+                    <td className="px-5 py-4 font-mono font-bold text-zinc-500">
+                      {item.dateLabel}
+                    </td>
+                    <td className="px-5 py-4 font-extrabold text-zinc-900 dark:text-white">
+                      {item.title}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        item.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
+                        item.difficulty === 'Medium' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
+                        'bg-rose-500/10 text-rose-500 border border-rose-500/20'
+                      }`}>
+                        {item.difficulty}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 font-mono font-bold text-amber-600 dark:text-amber-400">
+                      +{item.rewardXp} XP
+                    </td>
+                    <td className="px-5 py-4 font-mono font-bold text-zinc-900 dark:text-white">
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>{item.solvedCount.toLocaleString()} members</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      {item.accuracyPct}%
+                    </td>
+                    <td className="px-5 py-4">
+                      <button
+                        onClick={() => {
+                          setSelectedApproach('optimal');
+                          setIsSolutionModalOpen(true);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-600 hover:text-white text-zinc-700 dark:text-zinc-300 font-bold text-[11px] transition-all flex items-center gap-1 cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>View Solution</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* Modal 1: Solve Challenge Code Runner Workspace */}
         {isSolveModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
@@ -656,9 +885,9 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                   </span>
                   <div>
                     <h3 className="font-extrabold text-base text-zinc-900 dark:text-white">
-                      Solve Challenge: Two Sum Problem
+                      Solve Challenge: {currentDailyChallenge.title}
                     </h3>
-                    <span className="text-[11px] text-zinc-400 font-mono">Easy &bull; 50 XP &bull; Time Limit: 15 Min</span>
+                    <span className="text-[11px] text-zinc-400 font-mono">{currentDailyChallenge.difficulty} &bull; +{currentDailyChallenge.rewardXp} XP &bull; Time Limit: {currentDailyChallenge.timeLimit}</span>
                   </div>
                 </div>
 
@@ -719,7 +948,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
 
               {/* Modal Footer */}
               <div className="p-5 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/50">
-                <span className="text-zinc-400 text-xs font-mono">Input: nums = [2, 7, 11, 15], target = 9 &bull; Expected: [0, 1]</span>
+                <span className="text-zinc-400 text-xs font-mono">Evaluation Mode &bull; Auto-Graded Test Runner</span>
 
                 <div className="flex items-center gap-3">
                   <button
@@ -745,7 +974,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
           </div>
         )}
 
-        {/* Modal 2: Official Solution Modal (With Selective Approach Tabs: Brute Force, Two Pointers, Optimal Hash Map) */}
+        {/* Modal 2: Official Solution Modal */}
         {isSolutionModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
@@ -755,7 +984,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-emerald-500" />
                   <h3 className="font-extrabold text-base text-zinc-900 dark:text-white">
-                    Official Solution: Two Sum Problem
+                    Official Solution: {currentDailyChallenge.title}
                   </h3>
                 </div>
                 <button onClick={() => setIsSolutionModalOpen(false)} className="text-zinc-400 hover:text-white p-1">
@@ -766,7 +995,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               {/* Modal Body */}
               <div className="p-6 overflow-y-auto space-y-5 flex-1 text-xs font-sans">
                 
-                {/* Selective Approach Tabs (Brute Force vs Two Pointers vs Optimal) */}
+                {/* Selective Approach Tabs */}
                 <div>
                   <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
                     Select Solution Approach:
@@ -845,7 +1074,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
                   </div>
                 </div>
 
-                {/* Syntactically Correct Solution Code Window */}
+                {/* Solution Code Window */}
                 <div className="relative rounded-2xl bg-zinc-950 p-4 font-mono text-xs text-emerald-400 border border-zinc-800 overflow-x-auto min-h-[180px]">
                   <button
                     onClick={handleCopySolution}
@@ -863,7 +1092,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-end bg-zinc-50/50 dark:bg-zinc-900/50">
                 <button
                   onClick={() => setIsSolutionModalOpen(false)}
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs cursor-pointer"
                 >
                   Close Solution
                 </button>

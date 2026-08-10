@@ -19,6 +19,8 @@ import {
   FacultyChatMessage
 } from './types';
 
+import { apiClient } from './apiClient';
+
 // Storage keys
 const STORAGE_KEYS = {
   COLLEGES: 'cg_colleges',
@@ -410,6 +412,11 @@ export function createBranch(collegeId: string, branchName: string): Branch {
   setStoredItem(STORAGE_KEYS.BRANCHES, [...allBranches, newBranch]);
   logAdminActivity(collegeId, 'batch', 'Branch Creation', `Created new department "${branchName.trim()}"`);
 
+  // Sync to Backend API endpoint
+  if (typeof window !== 'undefined') {
+    apiClient.branches.create(collegeId, branchName.trim()).catch(() => {});
+  }
+
   return newBranch;
 }
 
@@ -473,6 +480,21 @@ export function createBatch(collegeId: string, branchId: string, batchName: stri
   logAdminActivity(collegeId, 'batch', 'Batch Creation', `Created batch ${batchName}`);
 
   return newBatch;
+}
+
+export function deleteBatch(collegeId: string, batchId: string): void {
+  const allBatches = getStoredItem<Batch[]>(STORAGE_KEYS.BATCHES, []);
+  const target = allBatches.find(b => b.id === batchId);
+  if (!target) throw new Error('Batch not found.');
+
+  const filteredBatches = allBatches.filter(b => b.id !== batchId);
+  setStoredItem(STORAGE_KEYS.BATCHES, filteredBatches);
+
+  const allStudents = getStoredItem<Student[]>(STORAGE_KEYS.STUDENTS, []);
+  const filteredStudents = allStudents.filter(s => s.batchId !== batchId);
+  setStoredItem(STORAGE_KEYS.STUDENTS, filteredStudents);
+
+  logAdminActivity(collegeId, 'batch', 'Batch Deletion', `Deleted batch ${target.batchName}`);
 }
 
 // Student API
@@ -1241,6 +1263,11 @@ export function createCourse(collegeId: string, params: {
 
   setStoredItem(STORAGE_KEYS.COURSES, [newCourse, ...allCourses]);
   logAdminActivity(collegeId, 'batch', 'Course Creation', `Mapped Course "${params.title}" (${params.code}) to ${params.branchCode}`);
+  
+  if (typeof window !== 'undefined') {
+    apiClient.courses.create(collegeId, params).catch(() => {});
+  }
+
   return newCourse;
 }
 
@@ -1254,6 +1281,11 @@ export function updateCourse(collegeId: string, courseId: string, params: Partia
   const updated = { ...allCourses[index], ...params };
   allCourses[index] = updated;
   setStoredItem(STORAGE_KEYS.COURSES, allCourses);
+
+  if (typeof window !== 'undefined') {
+    apiClient.courses.update(collegeId, courseId, params).catch(() => {});
+  }
+
   return updated;
 }
 
@@ -1261,5 +1293,9 @@ export function deleteCourse(collegeId: string, courseId: string): void {
   const allCourses = getStoredItem<Course[]>(STORAGE_KEYS.COURSES, []);
   const filtered = allCourses.filter(c => !(c.id === courseId && c.collegeId === collegeId));
   setStoredItem(STORAGE_KEYS.COURSES, filtered);
+
+  if (typeof window !== 'undefined') {
+    apiClient.courses.delete(collegeId, courseId).catch(() => {});
+  }
 }
 

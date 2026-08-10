@@ -118,8 +118,10 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-              <span>Actively solving problems</span>
-              <span className="font-semibold text-amber-600 dark:text-amber-400">Live activity</span>
+              <span>Industry placed / working</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">
+                {stats.totalStudents > 0 ? `${Math.round((stats.studentsWorking / stats.totalStudents) * 100)}%` : '0%'}
+              </span>
             </div>
           </div>
         </div>

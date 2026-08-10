@@ -10,9 +10,11 @@ import {
   deleteContest, 
   getCollegeBranches, 
   getBranchBatches, 
-  getCollegeProblems 
+  getCollegeProblems,
+  getBatchStudents
 } from '@/lib/db';
 import { Contest, Branch, Batch, Problem } from '@/lib/types';
+import { EmailService } from '@/lib/emailService';
 import { Trophy, Plus, Calendar, Clock, X, AlertTriangle, Eye, Trash2, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -95,7 +97,7 @@ export default function ContestsPage() {
     }
 
     try {
-      createContest(college.id, {
+      const created = createContest(college.id, {
         title: title.trim(),
         description: description.trim(),
         startTime: new Date(startTime).toISOString(),
@@ -104,7 +106,18 @@ export default function ContestsPage() {
         branchId: selectedBranchId,
         batchId: selectedBatchId,
       });
-      toast.success(`Contest "${title}" scheduled successfully!`);
+
+      // Dispatch notification email to batch students
+      const batchStudents = getBatchStudents(selectedBatchId);
+      const currentBatch = batches.find(b => b.id === selectedBatchId);
+      EmailService.dispatchContestNotification(
+        batchStudents,
+        college.collegeName,
+        currentBatch?.batchName || 'Selected Batch',
+        created
+      );
+
+      toast.success(`Contest "${title}" scheduled & emailed to ${batchStudents.length} students!`);
       setIsCreateOpen(false);
       loadData();
     } catch (err: any) {

@@ -14,6 +14,7 @@ import {
   getBatchStudents
 } from '@/lib/db';
 import { Assignment, Branch, Batch, Problem } from '@/lib/types';
+import { EmailService } from '@/lib/emailService';
 import { 
   Code2, 
   Plus, 
@@ -28,7 +29,8 @@ import {
   Layers,
   Eye,
   Award,
-  Terminal
+  Terminal,
+  Mail
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -154,7 +156,7 @@ export default function AssignmentsPage() {
         });
         toast.success(`Assignment "${title}" updated successfully!`);
       } else {
-        createAssignment(college.id, {
+        const created = createAssignment(college.id, {
           title: title.trim(),
           description: description.trim(),
           branchId: selectedBranchId,
@@ -165,7 +167,18 @@ export default function AssignmentsPage() {
           marks,
           codeTag: codeTag.trim(),
         });
-        toast.success(`Assignment "${title}" created successfully!`);
+
+        // Dispatch student emails for batch
+        const batchStudents = getBatchStudents(selectedBatchId);
+        const currentBatch = batches.find(b => b.id === selectedBatchId);
+        EmailService.dispatchAssignmentNotification(
+          batchStudents,
+          college.collegeName,
+          currentBatch?.batchName || 'Selected Batch',
+          created
+        );
+
+        toast.success(`Assignment "${title}" created & emailed to ${batchStudents.length} enrolled students!`);
       }
       setIsFormOpen(false);
       loadData();

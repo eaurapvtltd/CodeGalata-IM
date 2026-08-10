@@ -6,7 +6,7 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useAuth } from '@/context/AuthContext';
 import { getContests, getContestLeaderboard, getCollegeProblems } from '@/lib/db';
 import { Contest, ContestLeaderboardEntry, Problem } from '@/lib/types';
-import { ArrowLeft, Clock, Award, Users, ShieldCheck, Mail, Timer, Trophy } from 'lucide-react';
+import { ArrowLeft, Clock, Award, Users, ShieldCheck, Mail, Timer, Trophy, Lock } from 'lucide-react';
 
 export default function ContestDetailPage({ params }: { params: Promise<{ contestId: string }> }) {
   const resolvedParams = use(params);
@@ -46,6 +46,8 @@ export default function ContestDetailPage({ params }: { params: Promise<{ contes
     );
   }
 
+  const isExpired = contest.status === 'Completed' || new Date(contest.endTime).getTime() < Date.now();
+
   return (
     <AdminLayout>
       <div className="space-y-8 max-w-7xl mx-auto">
@@ -65,9 +67,9 @@ export default function ContestDetailPage({ params }: { params: Promise<{ contes
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                   contest.status === 'Running' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
                   contest.status === 'Upcoming' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' :
-                  'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
+                  'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                 }`}>
-                  {contest.status}
+                  {isExpired ? 'Deadline Passed' : contest.status}
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">{contest.description}</p>
@@ -76,11 +78,24 @@ export default function ContestDetailPage({ params }: { params: Promise<{ contes
             <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-zinc-800/80 rounded-2xl border border-zinc-200 dark:border-zinc-700/60 shadow-sm self-start sm:self-center">
               <Clock className="w-4 h-4 text-emerald-500" />
               <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                {contest.status === 'Running' ? 'Live Contest' : contest.status === 'Completed' ? 'Finished' : 'Upcoming'}
+                {isExpired ? 'Submissions Locked' : contest.status === 'Running' ? 'Live Contest' : 'Upcoming'}
               </span>
             </div>
           </div>
         </div>
+
+        {/* Lockout Notice Banner if Expired */}
+        {isExpired && (
+          <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-600 dark:text-rose-400 text-xs font-semibold">
+            <Lock className="w-5 h-5 shrink-0" />
+            <div>
+              <p className="font-bold text-sm">Contest Deadline Crossed — Submissions Closed</p>
+              <p className="text-[11px] opacity-80 mt-0.5">
+                The scheduled end time ({new Date(contest.endTime).toLocaleString()}) has elapsed. Further code submissions for this contest are locked.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Info Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

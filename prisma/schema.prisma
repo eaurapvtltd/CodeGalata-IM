@@ -1,13 +1,335 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-}
-
 datasource db {
   provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model College {
+  id           String             @id @default(uuid())
+  collegeName  String
+  collegeEmail String             @unique
+  password     String
+  createdAt    DateTime           @default(now())
+  
+  // Relations
+  branches     Branch[]
+  problems     Problem[]
+  assignments  Assignment[]
+  contests     Contest[]
+  practices    TimedPractice[]
+  faculty      FacultyMember[]
+  messages     FacultyChatMessage[]
+  logs         ActivityLog[]
+  activities   Activity[]
+  courses      Course[]
+  settings     CollegeSettings?
+}
+
+model Branch {
+  id         String   @id @default(uuid())
+  collegeId  String
+  branchName String   // e.g. "CSE", "AI", "AIML", "ECE", "EEE", "Mechanical", "Civil"
+
+  // Relations
+  college    College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  batches    Batch[]
+  assignments Assignment[]
+  contests   Contest[]
+
+  @@unique([collegeId, branchName])
+  @@index([collegeId])
+}
+
+model Batch {
+  id         String   @id @default(uuid())
+  branchId   String
+  batchName  String   // e.g. "CSE-A", "CSE-B"
+  createdAt  DateTime @default(now())
+
+  // Relations
+  branch              Branch               @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  students            Student[]
+  assignments         Assignment[]
+  contests            Contest[]
+  practices           TimedPractice[]
+  courseBatchMappings CourseBatchMapping[]
+
+  @@unique([branchId, batchName])
+  @@index([branchId])
+}
+
+model Student {
+  id                      String       @id @default(uuid())
+  batchId                 String
+  studentName             String
+  cgpa                    Float        @default(0.0)
+  email                   String       @unique
+  status                  String       @default("Activated") // 'Not Activated' | 'Activated' | 'Working'
+  lastActive              String?      @default("Offline")
+  registeredOn            String?
+  lastLogin               String?
+  role                    String       @default("STUDENT")
+  createdAt               DateTime     @default(now())
+  
+  // Extended Details
+  rollNo                  String?
+  phone                   String?
+  avatar                  String?
+  attendancePct           Float        @default(100.0)
+  solvedProblemsCount     Int          @default(0)
+  totalQuestionsAttempted  Int          @default(0)
+  accuracyPct             Float        @default(0.0)
+  totalPoints             Int          @default(0)
+  weakPoints              String[]     // Identified weak topics e.g. ["Dynamic Programming"]
+
+  // Relations
+  batch                   Batch        @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  submissions             Submission[]
+
+  @@index([batchId])
+  @@index([email])
+}
+
+model FacultyMember {
+  id          String   @id @default(uuid())
+  collegeId   String
+  name        String
+  email       String   @unique
+  department  String   // e.g., "CSE", "AI"
+  designation String   // e.g., "Professor & HOD"
+  avatar      String?
+  status      String   @default("offline") // "online", "offline"
+  lastSeen    DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  college     College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  messages    FacultyChatMessage[]
+
+  @@index([collegeId])
+  @@index([email])
+}
+
+model FacultyChatMessage {
+  id                    String        @id @default(uuid())
+  collegeId             String
+  facultyId             String
+  sender                String        // "admin", "faculty"
+  senderName            String
+  text                  String
+  timestamp             DateTime      @default(now())
+  isRead                Boolean       @default(false)
+  referenceContextType  String?       // "contest", "assignment", "problem"
+  referenceContextTitle String?
+  referenceContextId    String?
+
+  // Relations
+  college               College       @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  faculty               FacultyMember @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([facultyId])
+}
+
+model Problem {
+  id               String       @id @default(uuid())
+  collegeId        String
+  title            String
+  shortDescription String?
+  description      String
+  languages        String[]
+  defaultCode      Json?        // Map of lang -> code
+  difficulty       String       // "Easy", "Medium", "Hard"
+  inputFormat      String
+  outputFormat     String
+  constraints      String
+  sampleInput      String
+  sampleOutput     String
+  explanation      String
+  hiddenTestCases  String?      // Format: input -> output per line
+  hints            String[]
+  solutionTitle    String?
+  solutionCode     String?
+  timeComplexity   String?
+  spaceComplexity  String?
+  isSolutionPublic Boolean      @default(true)
+  companies        String[]
+  topics           String[]
+  realWorldOutcome String?
+  createdAt        DateTime     @default(now())
+
+  // Relations
+  college          College      @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  submissions      Submission[]
+  testCases        TestCase[]
+
+  @@index([collegeId])
+}
+
+model TestCase {
+  id        String   @id @default(uuid())
+  problemId String
+  input     String
+  output    String
+  isPublic  Boolean  @default(false)
+
+  // Relations
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@index([problemId])
+}
+
+model Assignment {
+  id              String   @id @default(uuid())
+  collegeId       String
+  title           String
+  description     String
+  branchId        String
+  batchId         String
+  problemIds      String[] // References to Problems
+  dueDate         DateTime
+  isPublished     Boolean  @default(true)
+  marks           Int?     @default(100)
+  codeTag         String?
+  createdAt       DateTime @default(now())
+
+  // Relations
+  college         College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  branch          Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  batch           Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([batchId])
+}
+
+model Contest {
+  id          String   @id @default(uuid())
+  collegeId   String
+  title       String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+  problemIds  String[] // References to Problems
+  branchId    String
+  batchId     String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  college     College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  batch       Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([batchId])
+}
+
+model TimedPractice {
+  id              String   @id @default(uuid())
+  collegeId       String
+  title           String
+  durationMinutes Int
+  problemIds      String[] // References to Problems
+  startDate       DateTime
+  endDate         DateTime
+  batchId         String
+  createdAt       DateTime @default(now())
+
+  // Relations
+  college         College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  batch           Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([batchId])
+}
+
+model Activity {
+  id          String   @id @default(uuid())
+  collegeId   String
+  type        String   // "batch_created" | "students_uploaded" | "problem_created" ...
+  description String
+  timestamp   DateTime @default(now())
+
+  // Relations
+  college     College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  collegeId   String
+  type        String   // "auth" | "student" | "batch" | "problem" ...
+  action      String
+  description String
+  adminEmail  String
+  timestamp   DateTime @default(now())
+
+  // Relations
+  college     College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+}
+
+model CollegeSettings {
+  collegeId            String   @id
+  logoUrl              String?
+  academicYear         String   @default("2025-2026")
+  defaultBranchId      String?
+  defaultBatchId       String?
+  notificationsEnabled Boolean  @default(true)
+  theme                String   @default("Dark")
+
+  // Relations
+  college              College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id            String   @id @default(uuid())
+  problemId     String
+  studentId     String
+  language      String
+  code          String
+  status        String   // "Pending", "Accepted", "Wrong Answer", "Time Limit Exceeded", "Compilation Error", "Runtime Error"
+  executionTime Float?   // in ms
+  memoryUsage   Int?     // in KB
+  score         Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  // Relations
+  problem       Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([problemId])
+  @@index([studentId])
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  collegeId   String
+  courseCode  String
+  courseName  String
+  description String?
+
+  // Relations
+  college             College              @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  courseBatchMappings CourseBatchMapping[]
+
+  @@unique([collegeId, courseCode])
+  @@index([collegeId])
+}
+
+model CourseBatchMapping {
+  id       String @id @default(uuid())
+  courseId String
+  batchId  String
+
+  // Relations
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  batch    Batch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, batchId])
+  @@index([courseId])
+  @@index([batchId])
 }

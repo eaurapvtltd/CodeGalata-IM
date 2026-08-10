@@ -3,16 +3,17 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Student } from '@/lib/types';
-import { Search, ArrowUpDown, ChevronLeft, ChevronRight, UserX, Mail, CheckCircle2, Clock, BarChart3 } from 'lucide-react';
+import { Search, ArrowUpDown, ChevronLeft, ChevronRight, UserX, Mail, BarChart3, Trash2 } from 'lucide-react';
 
 interface StudentTableProps {
   students: Student[];
+  onDeleteStudent?: (student: Student) => void;
 }
 
 type SortField = 'studentName' | 'cgpa' | 'email' | 'status';
 type SortOrder = 'asc' | 'desc';
 
-export function StudentTable({ students }: StudentTableProps) {
+export function StudentTable({ students, onDeleteStudent }: StudentTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('studentName');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -134,7 +135,6 @@ export function StudentTable({ students }: StudentTableProps) {
                       <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
-                  <th className="px-5 py-3.5 whitespace-nowrap">Role</th>
                   <th className="px-5 py-3.5 whitespace-nowrap">Activated</th>
                   <th className="px-5 py-3.5 whitespace-nowrap">Registered On</th>
                   <th 
@@ -146,7 +146,7 @@ export function StudentTable({ students }: StudentTableProps) {
                       <ArrowUpDown className="w-3 h-3 shrink-0" />
                     </div>
                   </th>
-                  <th className="px-5 py-3.5 whitespace-nowrap">Student Report</th>
+                  <th className="px-5 py-3.5 whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 whitespace-nowrap">
@@ -178,9 +178,6 @@ export function StudentTable({ students }: StudentTableProps) {
                           <span>{st.email}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 font-mono font-extrabold text-zinc-900 dark:text-white text-xs uppercase whitespace-nowrap">
-                        {st.role || 'ADMIN'}
-                      </td>
                       <td className="px-5 py-4 font-bold text-xs whitespace-nowrap">
                         {isActivated ? (
                           <span className="text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">Yes</span>
@@ -195,13 +192,24 @@ export function StudentTable({ students }: StudentTableProps) {
                         {loginTime}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
-                        <Link 
-                          href={`/students/${st.id}`} 
-                          className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs hover:scale-105 whitespace-nowrap shrink-0"
-                        >
-                          <BarChart3 className="w-3.5 h-3.5 shrink-0" />
-                          <span className="whitespace-nowrap">View Full Report</span>
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link 
+                            href={`/students/${st.id}`} 
+                            className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white font-bold text-[11px] transition-all flex items-center gap-1.5 w-fit shadow-2xs hover:scale-105 whitespace-nowrap shrink-0"
+                          >
+                            <BarChart3 className="w-3.5 h-3.5 shrink-0" />
+                            <span className="whitespace-nowrap">View Full Report</span>
+                          </Link>
+                          {onDeleteStudent && (
+                            <button
+                              onClick={() => onDeleteStudent(st)}
+                              title="Delete Student"
+                              className="p-1.5 rounded-xl text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 border border-transparent hover:border-rose-200 dark:hover:border-rose-800 transition-all shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

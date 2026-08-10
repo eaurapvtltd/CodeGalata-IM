@@ -15,6 +15,7 @@ import {
   BookOpen,
   Users,
   Trophy,
+  Award,
   Timer,
   BarChart3,
   Activity,
@@ -51,6 +52,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile }: AdminSideb
 
   const evaluationItems = [
     { name: 'Daily Challenge', href: '/daily-challenge', icon: Sparkles },
+    { name: 'Students Leaderboard', href: '/students-leaderboard', icon: Award },
     { name: 'Campus Leaderboard', href: '/campus-leaderboard', icon: Trophy },
     { name: 'Contests & Tests', href: '/contests', icon: Trophy },
     { name: 'Timed Practice', href: '/practice', icon: Timer },

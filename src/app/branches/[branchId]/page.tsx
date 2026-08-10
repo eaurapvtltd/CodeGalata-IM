@@ -4,11 +4,11 @@ import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useAuth } from '@/context/AuthContext';
-import { getCollegeBranches, getBranchBatches, createBatch, getBatchStudents, addSingleStudent } from '@/lib/db';
+import { getCollegeBranches, getBranchBatches, createBatch, deleteBatch, getBatchStudents, addSingleStudent, deleteStudent } from '@/lib/db';
 import { Branch, Batch, Student } from '@/lib/types';
 import { StudentUploadModal } from '@/components/branches/StudentUploadModal';
 import { StudentTable } from '@/components/branches/StudentTable';
-import { ArrowLeft, Plus, Upload, Layers, Users, X, UserPlus } from 'lucide-react';
+import { ArrowLeft, Plus, Upload, Layers, Users, X, UserPlus, Trash2, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function BranchDetailPage({ params }: { params: Promise<{ branchId: string }> }) {
@@ -22,6 +22,8 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
 
   // Modals
   const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false);
+  const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
+  const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
   const [newBatchName, setNewBatchName] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isManualAddOpen, setIsManualAddOpen] = useState(false);
@@ -42,8 +44,10 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
       setBranch(targetBranch);
       const bList = getBranchBatches(targetBranch.id);
       setBatches(bList);
-      if (bList.length > 0 && !activeBatchId) {
+      if (bList.length > 0 && (!activeBatchId || !bList.find(b => b.id === activeBatchId))) {
         setActiveBatchId(bList[0].id);
+      } else if (bList.length === 0) {
+        setActiveBatchId(null);
       }
     }
   };
@@ -76,6 +80,38 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
       setActiveBatchId(created.id);
     } catch (err: any) {
       toast.error(err.message || 'Failed to create batch');
+    }
+  };
+
+  const handleDeleteBatch = () => {
+    if (!college || !activeBatchId || !branch) return;
+    try {
+      const batchToDelete = batches.find(b => b.id === activeBatchId);
+      deleteBatch(college.id, activeBatchId);
+      toast.success(`Batch "${batchToDelete?.batchName || ''}" deleted successfully!`);
+      setIsDeleteBatchModalOpen(false);
+      
+      const updatedBatches = getBranchBatches(branch.id);
+      setBatches(updatedBatches);
+      if (updatedBatches.length > 0) {
+        setActiveBatchId(updatedBatches[0].id);
+      } else {
+        setActiveBatchId(null);
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to delete batch');
+    }
+  };
+
+  const handleDeleteStudent = () => {
+    if (!college || !deletingStudent) return;
+    try {
+      deleteStudent(college.id, deletingStudent.id);
+      toast.success(`Student "${deletingStudent.studentName}" deleted successfully!`);
+      setDeletingStudent(null);
+      loadBranchData();
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to delete student');
     }
   };
 
@@ -189,7 +225,7 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => {
                     setMRollNo(`REG${Math.floor(100000 + Math.random() * 900000)}`);
@@ -207,11 +243,18 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
                   <Upload className="w-4 h-4 text-emerald-400" />
                   <span>Upload Excel (.xlsx)</span>
                 </button>
+                <button
+                  onClick={() => setIsDeleteBatchModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white font-semibold text-xs transition-all flex items-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete Batch</span>
+                </button>
               </div>
             </div>
 
             {/* Student Table */}
-            <StudentTable students={students} />
+            <StudentTable students={students} onDeleteStudent={(student) => setDeletingStudent(student)} />
           </div>
         ) : (
           <div className="py-16 text-center bg-white dark:bg-zinc-900 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-3xl">
@@ -395,6 +438,69 @@ export default function BranchDetailPage({ params }: { params: Promise<{ branchI
             batchName={activeBatch.batchName}
             onSuccess={loadBranchData}
           />
+        )}
+
+        {/* Modal: Delete Batch Confirmation */}
+        {isDeleteBatchModalOpen && activeBatch && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl">
+              <div className="flex items-center gap-3 text-rose-500 mb-4">
+                <AlertTriangle className="w-6 h-6 shrink-0" />
+                <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Delete Batch {activeBatch.batchName}?</h3>
+              </div>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                Are you sure you want to delete batch <strong className="text-zinc-900 dark:text-white">{activeBatch.batchName}</strong>? 
+                This action will permanently delete the batch and remove all <strong className="text-zinc-900 dark:text-white">{students.length}</strong> enrolled students in this batch. This action cannot be undone.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteBatchModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteBatch}
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs shadow-md"
+                >
+                  Delete Batch
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Delete Student Confirmation */}
+        {deletingStudent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl">
+              <div className="flex items-center gap-3 text-rose-500 mb-4">
+                <AlertTriangle className="w-6 h-6 shrink-0" />
+                <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Delete Student?</h3>
+              </div>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                Are you sure you want to delete <strong className="text-zinc-900 dark:text-white">{deletingStudent.studentName}</strong> ({deletingStudent.email})? This action cannot be undone.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeletingStudent(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteStudent}
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs shadow-md"
+                >
+                  Delete Student
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </AdminLayout>
