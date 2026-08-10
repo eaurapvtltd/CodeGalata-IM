@@ -49,9 +49,9 @@ export async function GET(request: Request) {
 
     const branchDistribution = await Promise.all(
       branches.map(async (branch) => {
-        const bBatches = batches.filter((b) => b.branchId === branch.id);
-        const bBatchIds = bBatches.map((b) => b.id);
-        const bStudentsCount = students.filter((s) => bBatchIds.includes(s.batchId)).length;
+        const bBatches = batches.filter((b: any) => b.branchId === branch.id);
+        const bBatchIds = bBatches.map((b: any) => b.id);
+        const bStudentsCount = students.filter((s: any) => bBatchIds.includes(s.batchId)).length;
         
         return {
           branch: branch.branchName,

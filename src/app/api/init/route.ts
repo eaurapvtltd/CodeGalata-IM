@@ -41,8 +41,8 @@ export async function POST() {
       )
     );
 
-    const cseBranch = branches.find((b) => b.branchName === 'CSE')!;
-    const aiBranch = branches.find((b) => b.branchName === 'AI')!;
+    const cseBranch = branches.find((b: any) => b.branchName === 'CSE')!;
+    const aiBranch = branches.find((b: any) => b.branchName === 'AI')!;
 
     // 3. Create Batches
     const batchCseA = await prisma.batch.create({

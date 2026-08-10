@@ -48,7 +48,7 @@ export async function GET(request: Request) {
             timeTaken: `${20 + index * 5}m 0s`, // simulated time taken or from database
           };
         })
-        .filter((e) => e !== null);
+        .filter((e: any) => e !== null);
 
       return NextResponse.json({ success: true, data: leaderboard });
     }
