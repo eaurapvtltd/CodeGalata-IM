@@ -127,22 +127,37 @@ export default function BranchesPage() {
                     <div className="relative z-20" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-emerald-100 text-zinc-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95 relative"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveDropdown(activeDropdown === branch.id ? null : branch.id);
+                        }}
+                        className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-100 dark:hover:bg-emerald-950/60 text-zinc-600 dark:text-zinc-400 hover:text-emerald-700 dark:hover:text-emerald-400 flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-95"
                         title="Branch options"
                       >
                         <MoreVertical className="w-5 h-5" />
-                        <div 
-                          className="absolute inset-0 z-10 cursor-pointer rounded-full"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setActiveDropdown(activeDropdown === branch.id ? null : branch.id);
-                          }}
-                        />
                       </button>
 
                       {activeDropdown === branch.id && (
-                        <div className="absolute right-0 top-9 mt-0.5 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-1.5" onClick={e => e.stopPropagation()}>
+                        <div 
+                          className="absolute right-0 top-11 w-52 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-2 animate-in fade-in zoom-in-95 duration-150" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveDropdown(null);
+                              router.push(`/branches/${branch.id}`);
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center justify-between transition-colors cursor-pointer"
+                          >
+                            <span className="flex items-center gap-2">
+                              <GitFork className="w-4 h-4" /> Open Branch & Batches
+                            </span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+
+                          <div className="h-px bg-zinc-100 dark:bg-zinc-700/60 my-1" />
+
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -150,30 +165,20 @@ export default function BranchesPage() {
                               setEditBranchName(branch.branchName);
                               setActiveDropdown(null);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 flex items-center gap-2"
+                            className="w-full text-left px-4 py-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 flex items-center gap-2 transition-colors cursor-pointer"
                           >
-                            <Edit2 className="w-4 h-4" /> Edit Branch
+                            <Edit2 className="w-4 h-4 text-zinc-400" /> Edit Branch Name
                           </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveDropdown(null);
-                              router.push(`/branches/${branch.id}`);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 flex items-center gap-2"
-                          >
-                            <Layers className="w-4 h-4" /> Manage Batches
-                          </button>
-                          <div className="h-px bg-zinc-200 dark:bg-zinc-700 my-1"></div>
+
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteBranch(branch.id, branch.branchName);
                               setActiveDropdown(null);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
+                            className="w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2 transition-colors cursor-pointer"
                           >
-                            <Trash2 className="w-4 h-4" /> Delete Branch
+                            <Trash2 className="w-4 h-4 text-rose-500" /> Delete Department
                           </button>
                         </div>
                       )}
