@@ -21,13 +21,6 @@ export default function BranchesPage() {
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
   const [editBranchName, setEditBranchName] = useState('');
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleOutsideClick = () => setActiveDropdown(null);
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, []);
-
   const loadBranches = () => {
     if (college) {
       const bList = getCollegeBranches(college.id);
@@ -138,49 +131,59 @@ export default function BranchesPage() {
                       </button>
 
                       {activeDropdown === branch.id && (
-                        <div 
-                          className="absolute right-0 top-11 w-52 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-2 animate-in fade-in zoom-in-95 duration-150" 
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <button
+                        <>
+                          <div 
+                            className="fixed inset-0 z-30 cursor-default" 
                             onClick={(e) => {
                               e.stopPropagation();
                               setActiveDropdown(null);
-                              router.push(`/branches/${branch.id}`);
-                            }}
-                            className="w-full text-left px-4 py-2.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center justify-between transition-colors cursor-pointer"
-                          >
-                            <span className="flex items-center gap-2">
-                              <GitFork className="w-4 h-4" /> Open Branch & Batches
-                            </span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
+                            }} 
+                          />
 
-                          <div className="h-px bg-zinc-100 dark:bg-zinc-700/60 my-1" />
-
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingBranch(branch);
-                              setEditBranchName(branch.branchName);
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full text-left px-4 py-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 flex items-center gap-2 transition-colors cursor-pointer"
+                          <div 
+                            className="absolute right-0 top-11 w-52 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 py-2 animate-in fade-in zoom-in-95 duration-150" 
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            <Edit2 className="w-4 h-4 text-zinc-400" /> Edit Branch Name
-                          </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(null);
+                                router.push(`/branches/${branch.id}`);
+                              }}
+                              className="w-full text-left px-4 py-2.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center justify-between transition-colors cursor-pointer"
+                            >
+                              <span className="flex items-center gap-2">
+                                <GitFork className="w-4 h-4" /> Open Branch & Batches
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteBranch(branch.id, branch.branchName);
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4 text-rose-500" /> Delete Department
-                          </button>
-                        </div>
+                            <div className="h-px bg-zinc-100 dark:bg-zinc-700/60 my-1" />
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingBranch(branch);
+                                setEditBranchName(branch.branchName);
+                                setActiveDropdown(null);
+                              }}
+                              className="w-full text-left px-4 py-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 flex items-center gap-2 transition-colors cursor-pointer"
+                            >
+                              <Edit2 className="w-4 h-4 text-zinc-400" /> Edit Branch Name
+                            </button>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteBranch(branch.id, branch.branchName);
+                                setActiveDropdown(null);
+                              }}
+                              className="w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4 text-rose-500" /> Delete Department
+                            </button>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
