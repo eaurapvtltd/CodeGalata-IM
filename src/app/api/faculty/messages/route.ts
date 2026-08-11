@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -32,7 +31,7 @@ export async function GET(request: Request) {
       orderBy: { timestamp: 'asc' },
     });
 
-    const formattedList = list.map((msg) => ({
+    const formattedList = list.map((msg: any) => ({
       id: msg.id,
       collegeId: msg.collegeId,
       facultyId: msg.facultyId,
@@ -73,7 +72,7 @@ export async function POST(request: Request) {
         sender,
         senderName,
         text,
-        isRead: sender === 'admin', // admin messages read by default
+        isRead: sender === 'admin',
         referenceContextType: referenceContext?.type || null,
         referenceContextTitle: referenceContext?.title || null,
         referenceContextId: referenceContext?.id || null,
@@ -109,7 +108,6 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Missing collegeId or facultyId' }, { status: 400 });
     }
 
-    // Mark messages sent by faculty to admin as read
     await prisma.facultyChatMessage.updateMany({
       where: {
         collegeId,

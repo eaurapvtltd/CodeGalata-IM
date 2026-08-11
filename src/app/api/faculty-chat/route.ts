@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
@@ -14,13 +13,12 @@ export async function GET(request: Request) {
 
   try {
     if (facultyId) {
-      // Get chat messages
       const list = await prisma.facultyChatMessage.findMany({
         where: { collegeId, facultyId },
         orderBy: { timestamp: 'asc' },
       });
 
-      const formatted = list.map((msg) => ({
+      const formatted = list.map((msg: any) => ({
         id: msg.id,
         collegeId: msg.collegeId,
         facultyId: msg.facultyId,
@@ -36,7 +34,6 @@ export async function GET(request: Request) {
         } : undefined,
       }));
 
-      // Automatically mark faculty messages as read when admin loads the chat
       await prisma.facultyChatMessage.updateMany({
         where: {
           collegeId,
@@ -52,14 +49,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: formatted });
     }
 
-    // Get list of faculty members
     const list = await prisma.facultyMember.findMany({
       where: { collegeId },
       orderBy: { name: 'asc' },
     });
 
     const enrichedList = await Promise.all(
-      list.map(async (f) => {
+      list.map(async (f: any) => {
         const unreadCount = await prisma.facultyChatMessage.count({
           where: {
             facultyId: f.id,

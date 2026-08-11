@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getLeaderboard } from '@/lib/redis';
@@ -22,21 +21,20 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Contest not found' }, { status: 404 });
     }
 
-    // 1. Try to fetch from Redis
     const redisEntries = await getLeaderboard(`leaderboard:contest:${contestId}`);
     
     if (redisEntries && redisEntries.length > 0) {
-      const studentIds = redisEntries.map((e) => e.studentId);
+      const studentIds = redisEntries.map((e: any) => e.studentId);
       const students = await prisma.student.findMany({
         where: { id: { in: studentIds } },
         select: { id: true, studentName: true, email: true },
       });
 
-      const studentMap = new Map(students.map((s) => [s.id, s]));
+      const studentMap = new Map(students.map((s: any) => [s.id, s]));
 
       const leaderboard = redisEntries
-        .map((entry, index) => {
-          const student = studentMap.get(entry.studentId);
+        .map((entry: any, index: number) => {
+          const student: any = studentMap.get(entry.studentId);
           if (!student) return null;
 
           return {
@@ -45,7 +43,7 @@ export async function GET(request: Request) {
             email: student.email,
             score: entry.score,
             solvedCount: Math.round(entry.score / 100),
-            timeTaken: `${20 + index * 5}m 0s`, // simulated time taken or from database
+            timeTaken: `${20 + index * 5}m 0s`,
           };
         })
         .filter((e: any) => e !== null);
@@ -53,16 +51,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: leaderboard });
     }
 
-    // 2. Database Fallback (Aggregate submissions directly)
-    // Find all students in this batch
     const students = await prisma.student.findMany({
       where: { batchId: contest.batchId },
       select: { id: true, studentName: true, email: true },
     });
 
-    const studentIds = students.map((s) => s.id);
+    const studentIds = students.map((s: any) => s.id);
 
-    // Get submissions for contest problems by these students within contest window
     const submissions = await prisma.submission.findMany({
       where: {
         studentId: { in: studentIds },
@@ -75,7 +70,6 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'asc' },
     });
 
-    // Compute solved counts per student
     const studentSubmissionsMap: Record<string, { solvedProblems: Set<string>; earliestAcceptTime: Record<string, Date> }> = {};
     
     for (const studentId of studentIds) {
@@ -97,13 +91,11 @@ export async function GET(request: Request) {
       }
     }
 
-    // Map to leaderboard items
-    const leaderboardEntries = students.map((st) => {
+    const leaderboardEntries = students.map((st: any) => {
       const stats = studentSubmissionsMap[st.id];
       const solvedCount = stats.solvedProblems.size;
       const score = solvedCount * 100;
 
-      // Compute total elapsed time since contest start for all solved problems
       let totalMinutes = 0;
       for (const probId in stats.earliestAcceptTime) {
         const acceptTime = stats.earliestAcceptTime[probId];
@@ -121,14 +113,12 @@ export async function GET(request: Request) {
       };
     });
 
-    // Sort: score descending, then time taken ascending
-    leaderboardEntries.sort((a, b) => {
+    leaderboardEntries.sort((a: any, b: any) => {
       if (b.score !== a.score) return b.score - a.score;
       return a.rawMinutes - b.rawMinutes;
     });
 
-    // Add rank
-    const rankedLeaderboard = leaderboardEntries.map((entry, index) => ({
+    const rankedLeaderboard = leaderboardEntries.map((entry: any, index: number) => ({
       rank: index + 1,
       studentName: entry.studentName,
       email: entry.email,

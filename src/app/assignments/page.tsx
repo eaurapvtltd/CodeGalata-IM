@@ -39,23 +39,19 @@ type TabFilter = 'ALL' | 'PUBLISHED' | 'SCHEDULED' | 'DRAFT';
 export default function AssignmentsPage() {
   const { college } = useAuth();
   
-  // Data State
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [problems, setProblems] = useState<Problem[]>([]);
 
-  // Search & Filter
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<TabFilter>('ALL');
 
-  // Modal State
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null);
   const [viewingAssignment, setViewingAssignment] = useState<Assignment | null>(null);
   const [deletingAssignment, setDeletingAssignment] = useState<Assignment | null>(null);
 
-  // Form Fields
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedBranchId, setSelectedBranchId] = useState('');

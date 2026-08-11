@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -27,7 +26,6 @@ export async function POST(request: Request) {
 
     const { collegeId, batchId, students } = parsed.data;
 
-    // Check if college exists
     const college = await prisma.college.findUnique({
       where: { id: collegeId },
     });
@@ -36,10 +34,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'College not found.' }, { status: 404 });
     }
 
-    const createdStudents = await prisma.$transaction(async (tx) => {
+    const createdStudents = await prisma.$transaction(async (tx: any) => {
       const results = [];
       for (const st of students) {
-        // Skip duplicate emails to prevent crashes, keeping the batch import process smooth
         const existing = await tx.student.findUnique({
           where: { email: st.email.toLowerCase() },
         });
@@ -65,7 +62,6 @@ export async function POST(request: Request) {
         results.push(student);
       }
 
-      // Log bulk upload activity
       await tx.activityLog.create({
         data: {
           collegeId,

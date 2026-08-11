@@ -25,7 +25,7 @@ export async function GET(request: Request) {
         id: college.id,
         collegeName: college.collegeName,
         collegeEmail: college.collegeEmail,
-        password: college.password, // Return hashed password for client-side AuthContext verification
+        password: college.password,
         createdAt: college.createdAt.toISOString(),
       },
     });

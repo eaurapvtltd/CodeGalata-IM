@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -41,7 +40,6 @@ export async function POST(request: Request) {
 
     const { collegeId, branchName } = parsed.data;
 
-    // Check if branch name already exists for this college
     const existing = await prisma.branch.findFirst({
       where: {
         collegeId,
@@ -53,7 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Branch "${branchName}" already exists for your college.` }, { status: 409 });
     }
 
-    const newBranch = await prisma.$transaction(async (tx) => {
+    const newBranch = await prisma.$transaction(async (tx: any) => {
       const branch = await tx.branch.create({
         data: {
           collegeId,
@@ -61,14 +59,13 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log admin activity
       await tx.activityLog.create({
         data: {
           collegeId,
           type: 'batch',
           action: 'Branch Creation',
           description: `Created new department "${branchName.trim()}"`,
-          adminEmail: 'admin@cgit.edu', // fallback or lookup
+          adminEmail: 'admin@cgit.edu',
         },
       });
 

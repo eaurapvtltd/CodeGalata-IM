@@ -14,7 +14,6 @@ export function AdminHeader({ onOpenMobileMenu }: AdminHeaderProps) {
   return (
     <header className="h-16 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center gap-3">
-        {/* Mobile Hamburger Menu Button */}
         {onOpenMobileMenu && (
           <button
             onClick={onOpenMobileMenu}
@@ -25,7 +24,6 @@ export function AdminHeader({ onOpenMobileMenu }: AdminHeaderProps) {
           </button>
         )}
 
-        {/* Search Input Placeholder */}
         <div className="relative w-44 sm:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
@@ -36,21 +34,17 @@ export function AdminHeader({ onOpenMobileMenu }: AdminHeaderProps) {
         </div>
       </div>
 
-      {/* Right User & Badge Menu */}
       <div className="flex items-center gap-2 sm:gap-4">
-        {/* Verified Tenant Status Pill */}
         <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>Verified College Admin</span>
         </div>
 
-        {/* Notifications Icon */}
         <button className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative">
           <Bell className="w-5 h-5" />
           <span className="w-2 h-2 rounded-full bg-emerald-500 absolute top-2 right-2 ring-2 ring-white dark:ring-zinc-900" />
         </button>
 
-        {/* College Profile Avatar */}
         <div className="flex items-center gap-2 sm:gap-3 pl-2 border-l border-zinc-200 dark:border-zinc-800">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
             {college?.collegeName ? college.collegeName.charAt(0).toUpperCase() : <User className="w-4 h-4" />}

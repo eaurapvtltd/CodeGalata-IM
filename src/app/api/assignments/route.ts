@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -30,18 +29,14 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Compute submission count for each assignment dynamically
-    // An assignment is mapped to a batch. Students in that batch who submitted any of the assignment's problemIds.
     const list = await Promise.all(
       assignments.map(async (assign: any) => {
-        // Find students in the batch
         const students = await prisma.student.findMany({
           where: { batchId: assign.batchId },
           select: { id: true },
         });
         const studentIds = students.map((s: any) => s.id);
 
-        // Count unique students who submitted any problem in the assignment
         const submissionCount = await prisma.submission.groupBy({
           by: ['studentId'],
           where: {
@@ -82,7 +77,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const newAssignment = await prisma.$transaction(async (tx) => {
+    const newAssignment = await prisma.$transaction(async (tx: any) => {
       const assignment = await tx.assignment.create({
         data: {
           collegeId,
@@ -91,7 +86,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log admin activity
       await tx.activityLog.create({
         data: {
           collegeId,
@@ -129,7 +123,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const assignment = await tx.assignment.update({
         where: { id: assignmentId },
         data: {
@@ -168,7 +162,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       const assignment = await tx.assignment.delete({
         where: { id: assignmentId },
       });

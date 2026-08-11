@@ -37,7 +37,6 @@ export default function ActivityLogsPage() {
     }
   };
 
-  // Filtered Logs
   const filteredLogs = logs.filter((log) => {
     const term = searchTerm.toLowerCase();
     const matchesSearch = log.action.toLowerCase().includes(term) ||

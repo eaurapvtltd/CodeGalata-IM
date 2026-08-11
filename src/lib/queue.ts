@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Queue, Worker, Job } from 'bullmq';
 import { prisma } from './prisma';
 import { logger } from './logger';
@@ -48,7 +47,7 @@ export function startSubmissionWorker() {
       });
 
       if (dbTestCases.length > 0) {
-        testCases.push(...dbTestCases.map(t => ({ input: t.input, output: t.output, isPublic: t.isPublic })));
+        testCases.push(...dbTestCases.map((t: any) => ({ input: t.input, output: t.output, isPublic: t.isPublic })));
       } else {
         if (submission.problem.sampleInput && submission.problem.sampleOutput) {
           testCases.push({
@@ -133,11 +132,11 @@ export function startSubmissionWorker() {
       });
 
       const solvedProblems = new Set(
-        allSubmissions.filter(s => s.status === 'Accepted').map(s => s.problemId)
+        allSubmissions.filter((s: any) => s.status === 'Accepted').map((s: any) => s.problemId)
       );
 
-      const totalAttempted = new Set(allSubmissions.map(s => s.problemId)).size;
-      const acceptedCount = allSubmissions.filter(s => s.status === 'Accepted').length;
+      const totalAttempted = new Set(allSubmissions.map((s: any) => s.problemId)).size;
+      const acceptedCount = allSubmissions.filter((s: any) => s.status === 'Accepted').length;
       const totalSubmissionsCount = allSubmissions.length;
       const accuracyPct = totalSubmissionsCount > 0 ? (acceptedCount / totalSubmissionsCount) * 100 : 0;
       const totalPoints = solvedProblems.size * 50;
@@ -180,7 +179,7 @@ export function startSubmissionWorker() {
         });
         
         const contestSolvedCount = new Set(
-          contestSubmissions.filter(s => s.status === 'Accepted').map(s => s.problemId)
+          contestSubmissions.filter((s: any) => s.status === 'Accepted').map((s: any) => s.problemId)
         ).size;
         
         const contestScore = contestSolvedCount * 100;

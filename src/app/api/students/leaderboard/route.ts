@@ -1,9 +1,7 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 
-// Default static fallback top coders matching the reference UI design
 const DEFAULT_TOP_CODERS = [
   {
     rank: 1,
@@ -81,7 +79,7 @@ export async function GET(request: Request) {
     }
 
     if (students && students.length >= 3) {
-      const formatted = students.map((st, idx) => ({
+      const formatted = students.map((st: any, idx: number) => ({
         rank: idx + 1,
         id: st.id,
         studentName: st.studentName,

@@ -21,7 +21,6 @@ export async function POST(request: Request) {
 
     const { email, password } = parsed.data;
 
-    // Find the college by email
     const college = await prisma.college.findUnique({
       where: { collegeEmail: email.toLowerCase() },
     });
@@ -30,18 +29,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No college registered with this email.' }, { status: 401 });
     }
 
-    // Verify password
     const isPasswordValid = await bcrypt.compare(password, college.password);
     if (!isPasswordValid) {
       return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 });
     }
 
-    // Generate JWT Tokens
     const tokenPayload = { collegeId: college.id, email: college.collegeEmail };
     const accessToken = signAccessToken(tokenPayload);
     const refreshToken = signRefreshToken(tokenPayload);
 
-    // Create response
     const response = NextResponse.json({
       success: true,
       data: {
@@ -52,28 +48,24 @@ export async function POST(request: Request) {
       },
     });
 
-    // Set secure HTTP-only cookies
     const isProd = process.env.NODE_ENV === 'production';
     
-    // Access token (15 minutes)
     response.cookies.set('cg_access_token', accessToken, {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
       path: '/',
-      maxAge: 15 * 60, // 15 mins
+      maxAge: 15 * 60,
     });
 
-    // Refresh token (7 days)
     response.cookies.set('cg_refresh_token', refreshToken, {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60,
     });
 
-    // Log admin login activity in DB
     await prisma.activityLog.create({
       data: {
         collegeId: college.id,

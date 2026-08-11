@@ -13,7 +13,6 @@ export async function GET() {
     let response = null;
 
     if (!payload) {
-      // Access token expired or missing, try refresh token
       const refreshToken = cookieStore.get('cg_refresh_token')?.value;
       const refreshPayload = refreshToken ? verifyRefreshToken(refreshToken) : null;
 
@@ -21,14 +20,12 @@ export async function GET() {
         return NextResponse.json({ error: 'Unauthorized session' }, { status: 401 });
       }
 
-      // Generate new tokens
       const newTokenPayload = { collegeId: refreshPayload.collegeId, email: refreshPayload.email };
       const newAccessToken = signAccessToken(newTokenPayload);
       const newRefreshToken = signRefreshToken(newTokenPayload);
 
       payload = newTokenPayload;
 
-      // Prepare response with refreshed cookies
       response = NextResponse.json({ success: true });
       const isProd = process.env.NODE_ENV === 'production';
       
@@ -64,7 +61,6 @@ export async function GET() {
     }
 
     if (response) {
-      // If we refreshed the tokens, send the user data in the refreshed response body
       return NextResponse.json({ success: true, data: college }, {
         headers: response.headers,
       });

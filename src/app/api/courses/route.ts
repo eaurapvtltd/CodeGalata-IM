@@ -30,7 +30,6 @@ export async function GET(request: Request) {
       });
       return NextResponse.json({ success: true, data: courses });
     } catch (e) {
-      // Return initial fallback courses if DB is initializing
       const fallbackCourses = [
         {
           id: 'crs-101',

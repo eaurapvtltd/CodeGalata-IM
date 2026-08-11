@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -12,7 +11,6 @@ const submissionSchema = z.object({
   code: z.string().min(1, 'Code cannot be empty'),
 });
 
-// Initialize worker if needed (helps run background workers in Next.js development)
 try {
   startSubmissionWorker();
 } catch (err) {
@@ -43,7 +41,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: list });
     }
 
-    // Default: return recent submissions
     const list = await prisma.submission.findMany({
       include: { student: true, problem: true },
       orderBy: { createdAt: 'desc' },
@@ -67,7 +64,6 @@ export async function POST(request: Request) {
 
     const { studentId, problemId, language, code } = parsed.data;
 
-    // Verify student and problem exist
     const student = await prisma.student.findUnique({
       where: { id: studentId },
     });
@@ -82,7 +78,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Problem not found.' }, { status: 404 });
     }
 
-    // Create the submission record in database
     const submission = await prisma.submission.create({
       data: {
         studentId,
@@ -94,19 +89,14 @@ export async function POST(request: Request) {
       },
     });
 
-    // Enqueue the submission for evaluation in BullMQ
     try {
       await submissionQueue.add('evaluate', { submissionId: submission.id });
       logger.info(`Enqueued submission ${submission.id} in BullMQ`);
     } catch (queueErr) {
       logger.warn(queueErr, `BullMQ queue failed to add job for submission ${submission.id}. Evaluating synchronously as fallback.`);
-      
-      // FALLBACK: Evaluate synchronously inside the request context
-      // This guarantees the app is functional even if Redis/BullMQ is not active in dev.
       await evaluateSynchronously(submission.id);
     }
 
-    // Return the created/evaluated submission
     const finalSubmission = await prisma.submission.findUnique({
       where: { id: submission.id },
       include: { problem: true },
@@ -119,13 +109,9 @@ export async function POST(request: Request) {
   }
 }
 
-// Synchronous evaluation fallback helper
 async function evaluateSynchronously(submissionId: string) {
   try {
-    // Run the logic from queue.ts inside a dynamic import or directly
     const { startSubmissionWorker } = await import('@/lib/queue');
-    // We can simulate processing by triggering the worker logic directly or reusing the simulation logic.
-    // In our case, we can fetch submission and execute simulated test matching.
     const submission = await prisma.submission.findUnique({
       where: { id: submissionId },
       include: { problem: true, student: { include: { batch: { include: { branch: true } } } } },
@@ -133,7 +119,6 @@ async function evaluateSynchronously(submissionId: string) {
 
     if (!submission) return;
 
-    // Run simple simulation matching
     const sampleIn = submission.problem.sampleInput;
     const sampleOut = submission.problem.sampleOutput;
     const codeLower = submission.code.toLowerCase();
@@ -163,12 +148,11 @@ async function evaluateSynchronously(submissionId: string) {
       },
     });
 
-    // Update student stats
     const studentId = submission.studentId;
     const allSub = await prisma.submission.findMany({ where: { studentId } });
-    const solvedProbs = new Set(allSub.filter(s => s.status === 'Accepted').map(s => s.problemId));
-    const totalAttempted = new Set(allSub.map(s => s.problemId)).size;
-    const acceptedCount = allSub.filter(s => s.status === 'Accepted').length;
+    const solvedProbs = new Set(allSub.filter((s: any) => s.status === 'Accepted').map((s: any) => s.problemId));
+    const totalAttempted = new Set(allSub.map((s: any) => s.problemId)).size;
+    const acceptedCount = allSub.filter((s: any) => s.status === 'Accepted').length;
     const accuracyPct = allSub.length > 0 ? (acceptedCount / allSub.length) * 100 : 0;
     const totalPoints = solvedProbs.size * 50;
 

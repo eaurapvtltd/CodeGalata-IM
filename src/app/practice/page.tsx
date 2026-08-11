@@ -18,16 +18,13 @@ import toast from 'react-hot-toast';
 export default function TimedPracticePage() {
   const { college } = useAuth();
 
-  // Data State
   const [practices, setPractices] = useState<TimedPractice[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [problems, setProblems] = useState<Problem[]>([]);
 
-  // Modals
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // Form Fields
   const [title, setTitle] = useState('');
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [startDate, setStartDate] = useState('');

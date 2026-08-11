@@ -37,21 +37,17 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
 
-  // Search & Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBranchFilter, setSelectedBranchFilter] = useState<string>('ALL');
 
-  // Modals
   const [isMapCourseOpen, setIsMapCourseOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
 
-  // Map Batches to Course Modal
   const [editingCourseForBatches, setEditingCourseForBatches] = useState<Course | null>(null);
   const [selectedBatchesForCourse, setSelectedBatchesForCourse] = useState<string[]>([]);
   const [availableBatches, setAvailableBatches] = useState<Batch[]>([]);
 
-  // Form Fields for Add / Edit Course
   const [newCourseCode, setNewCourseCode] = useState('');
   const [newCourseTitle, setNewCourseTitle] = useState('');
   const [newCourseCredits, setNewCourseCredits] = useState('4');

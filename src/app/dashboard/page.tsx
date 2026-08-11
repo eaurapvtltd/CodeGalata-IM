@@ -38,7 +38,6 @@ export default function DashboardPage() {
   return (
     <AdminLayout>
       <div className="space-y-8 max-w-7xl mx-auto">
-        {/* Welcome Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/40 via-emerald-800/20 to-zinc-900 p-6 rounded-3xl border border-emerald-500/20 shadow-sm">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
@@ -56,9 +55,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* 3 Main Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Total Students */}
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div>
@@ -79,7 +76,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Card 2: Active Students */}
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div>
@@ -102,7 +98,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Card 3: Students Working */}
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div>
@@ -126,9 +121,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Analytics Section: Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Pie Chart: Status Breakdown */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -167,7 +160,6 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
 
-            {/* Custom Legend */}
             <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-3 gap-2 text-center">
               {stats.statusDistribution.map((item) => (
                 <div key={item.name} className="flex flex-col items-center">
@@ -181,7 +173,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Line Chart: Activity Trend */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm lg:col-span-2 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -211,9 +202,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Bar Graph: Branch Overview & Recent Activity Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Bar Graph: Branch Distribution */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -241,7 +230,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Recent Activity Section */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
               <h2 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2 mb-1">

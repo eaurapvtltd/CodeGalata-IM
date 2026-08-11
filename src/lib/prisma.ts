@@ -1,4 +1,3 @@
-// @ts-nocheck
 let PrismaClientClass: any = null;
 
 try {

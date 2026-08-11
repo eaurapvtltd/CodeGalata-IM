@@ -376,7 +376,7 @@ export async function registerCollege(params: {
   return newCollege;
 }
 
-// Branch API (Including Dynamic Creation!)
+// Branch API
 export function getCollegeBranches(collegeId: string): Branch[] {
   const allBranches = getStoredItem<Branch[]>(STORAGE_KEYS.BRANCHES, []);
   let collegeBranches = allBranches.filter(b => b.collegeId === collegeId);
@@ -392,7 +392,6 @@ export function getCollegeBranches(collegeId: string): Branch[] {
   return collegeBranches;
 }
 
-// Dynamic Branch Creation API
 export function createBranch(collegeId: string, branchName: string): Branch {
   const allBranches = getStoredItem<Branch[]>(STORAGE_KEYS.BRANCHES, []);
   const existing = allBranches.find(
@@ -519,19 +518,16 @@ export function getAllCollegeStudents(collegeId: string): Student[] {
     .map(s => ({ ...s, batchName: s.batchName || getBatchName(s.batchId) }));
 }
 
-// Deep-Dive Individual Student Diagnostic Analytics Retriever
 export function getStudentById(studentId: string): Student | null {
   const allStudents = getStoredItem<Student[]>(STORAGE_KEYS.STUDENTS, []);
   const student = allStudents.find(s => s.id === studentId);
   if (!student) return null;
 
-  // Compute rich diagnostic analytics for THIS individual student
   const solvedCount = student.solvedProblemsCount || Math.floor(15 + Math.random() * 35);
   const attemptedCount = student.totalQuestionsAttempted || solvedCount + Math.floor(5 + Math.random() * 15);
   const accuracy = student.accuracyPct || Math.round((solvedCount / attemptedCount) * 100);
   const xpPoints = student.totalPoints || solvedCount * 45 + 150;
 
-  // Topic Level Performance Breakdown & Weak Point Detection
   const topicStats: StudentTopicStat[] = [
     { topic: 'Arrays & Hashing', total: 12, solved: 11, accuracy: 91.6, status: 'Strong' },
     { topic: 'Strings', total: 10, solved: 8, accuracy: 80.0, status: 'Strong' },
@@ -542,10 +538,8 @@ export function getStudentById(studentId: string): Student | null {
     { topic: 'Bit Manipulation', total: 5, solved: 1, accuracy: 20.0, status: 'Weak' },
   ];
 
-  // Identify Weak Points dynamically (topics with status 'Weak')
   const weakPoints = topicStats.filter(t => t.status === 'Weak').map(t => t.topic);
 
-  // Submissions Audit Records for this specific student
   const submissionsHistory: StudentSubmissionRecord[] = [
     { id: 'sub-101', problemTitle: 'Two Sum', topic: 'Arrays & Hashing', difficulty: 'Easy', status: 'Accepted', score: 50, timeTaken: '12m 40s', date: new Date(Date.now() - 3600000 * 2).toISOString() },
     { id: 'sub-102', problemTitle: 'Valid Anagram', topic: 'Strings', difficulty: 'Easy', status: 'Accepted', score: 50, timeTaken: '08m 15s', date: new Date(Date.now() - 3600000 * 18).toISOString() },
@@ -1036,10 +1030,7 @@ export function getCollegeDashboardStats(collegeId: string): DashboardStats {
   };
 }
 
-// ==========================================
-// Faculty Chat API & Storage Handlers
-// ==========================================
-
+// Faculty Chat
 export function getCollegeFaculty(collegeId: string): FacultyMember[] {
   const allFaculty = getStoredItem<FacultyMember[]>(STORAGE_KEYS.FACULTY, []);
   let collegeFaculty = allFaculty.filter(f => f.collegeId === collegeId);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -21,7 +20,6 @@ export async function GET(request: Request) {
     const batchId = searchParams.get('batchId');
     const collegeId = searchParams.get('collegeId');
 
-    // 1. Fetch single student details with diagnostic analytics
     if (studentId) {
       const student = await prisma.student.findUnique({
         where: { id: studentId },
@@ -46,10 +44,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Student not found.' }, { status: 404 });
       }
 
-      // Compute topic-level statistics
-      // A mock/fallback breakdown as in original db.ts, merged with real submission status if any
       const submissionCount = student.submissions.length;
-      const solvedCount = student.submissions.filter(s => s.status === 'Accepted').length;
+      const solvedCount = student.submissions.filter((s: any) => s.status === 'Accepted').length;
       const accuracy = submissionCount > 0 ? Math.round((solvedCount / submissionCount) * 100) : 0;
       
       const defaultTopicStats = [
@@ -62,9 +58,9 @@ export async function GET(request: Request) {
         { topic: 'Bit Manipulation', total: 5, solved: 0, accuracy: 0.0, status: 'Weak' },
       ];
 
-      const weakPoints = defaultTopicStats.filter(t => t.status === 'Weak').map(t => t.topic);
+      const weakPoints = defaultTopicStats.filter((t: any) => t.status === 'Weak').map((t: any) => t.topic);
 
-      const submissionsHistory = student.submissions.map(sub => ({
+      const submissionsHistory = student.submissions.map((sub: any) => ({
         id: sub.id,
         problemTitle: sub.problem.title,
         topic: sub.problem.topics[0] || 'General',
@@ -86,7 +82,7 @@ export async function GET(request: Request) {
         submissionsHistory,
         activityLogs: [
           { action: 'Joined Batch & Completed Setup', timestamp: student.createdAt.toISOString() },
-          ...student.submissions.slice(0, 5).map(sub => ({
+          ...student.submissions.slice(0, 5).map((sub: any) => ({
             action: `Submitted ${sub.problem.title} (${sub.status})`,
             timestamp: sub.createdAt.toISOString(),
           })),
@@ -96,7 +92,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: extendedStudent });
     }
 
-    // 2. Fetch by batch ID
     if (batchId) {
       const list = await prisma.student.findMany({
         where: { batchId },
@@ -105,16 +100,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: list });
     }
 
-    // 3. Fetch all students for college
     if (collegeId) {
       const branches = await prisma.branch.findMany({
         where: { collegeId },
       });
-      const branchIds = branches.map(b => b.id);
+      const branchIds = branches.map((b: any) => b.id);
       const batches = await prisma.batch.findMany({
         where: { branchId: { in: branchIds } },
       });
-      const batchIds = batches.map(b => b.id);
+      const batchIds = batches.map((b: any) => b.id);
 
       const list = await prisma.student.findMany({
         where: { batchId: { in: batchIds } },
@@ -148,7 +142,6 @@ export async function POST(request: Request) {
 
     const { batchId, studentName, rollNo, email, phone, cgpa, status } = parsed.data;
 
-    // Check duplicate email
     const existing = await prisma.student.findUnique({
       where: { email: email.toLowerCase() },
     });
@@ -157,7 +150,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'A student with this email address already exists in the system.' }, { status: 409 });
     }
 
-    const newStudent = await prisma.$transaction(async (tx) => {
+    const newStudent = await prisma.$transaction(async (tx: any) => {
       const student = await tx.student.create({
         data: {
           batchId,
@@ -173,7 +166,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log admin activity
       await tx.activityLog.create({
         data: {
           collegeId,
@@ -206,8 +198,7 @@ export async function PUT(request: Request) {
 
     const body = await request.json();
     
-    // Perform partial update
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const student = await tx.student.update({
         where: { id: studentId },
         data: body,
@@ -243,7 +234,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       const student = await tx.student.delete({
         where: { id: studentId },
       });

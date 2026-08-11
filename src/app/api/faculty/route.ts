@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -26,14 +25,13 @@ export async function GET(request: Request) {
       orderBy: { name: 'asc' },
     });
 
-    // Compute unread message count dynamically
     const enrichedList = await Promise.all(
-      list.map(async (f) => {
+      list.map(async (f: any) => {
         const unreadCount = await prisma.facultyChatMessage.count({
           where: {
             facultyId: f.id,
             isRead: false,
-            sender: 'faculty', // admin reads messages sent by faculty
+            sender: 'faculty',
           },
         });
 
@@ -64,7 +62,6 @@ export async function POST(request: Request) {
 
     const { collegeId, name, email, department, designation } = parsed.data;
 
-    // Check duplicate
     const existing = await prisma.facultyMember.findUnique({
       where: { email: email.toLowerCase() },
     });
@@ -73,7 +70,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Faculty member with email "${email}" is already registered.` }, { status: 409 });
     }
 
-    const newFaculty = await prisma.$transaction(async (tx) => {
+    const newFaculty = await prisma.$transaction(async (tx: any) => {
       const faculty = await tx.facultyMember.create({
         data: {
           collegeId,
@@ -85,7 +82,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log admin activity
       await tx.activityLog.create({
         data: {
           collegeId,

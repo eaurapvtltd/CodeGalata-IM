@@ -38,7 +38,6 @@ import toast from 'react-hot-toast';
 export default function FacultyChatPage() {
   const { college } = useAuth();
 
-  // State
   const [facultyList, setFacultyList] = useState<FacultyMember[]>([]);
   const [selectedFaculty, setSelectedFaculty] = useState<FacultyMember | null>(null);
   const [messages, setMessages] = useState<FacultyChatMessage[]>([]);
@@ -52,18 +51,15 @@ export default function FacultyChatPage() {
     setMobileActiveView('chat');
   };
 
-  // Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newFacultyName, setNewFacultyName] = useState('');
   const [newFacultyEmail, setNewFacultyEmail] = useState('');
   const [newFacultyDept, setNewFacultyDept] = useState('CSE');
   const [newFacultyDesignation, setNewFacultyDesignation] = useState('Assistant Professor');
 
-  // Context attachment state
   const [selectedContext, setSelectedContext] = useState<FacultyChatMessage['referenceContext'] | undefined>(undefined);
   const [showContextPicker, setShowContextPicker] = useState(false);
 
-  // Available context items
   const [availableContests, setAvailableContests] = useState<{ id: string; title: string }[]>([]);
   const [availableProblems, setAvailableProblems] = useState<{ id: string; title: string }[]>([]);
   const [availableAssignments, setAvailableAssignments] = useState<{ id: string; title: string }[]>([]);

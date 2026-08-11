@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
 
     const now = new Date().getTime();
 
-    const list = contests.map((c) => {
+    const list = contests.map((c: any) => {
       const start = new Date(c.startTime).getTime();
       const end = new Date(c.endTime).getTime();
       
@@ -73,7 +72,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const newContest = await prisma.$transaction(async (tx) => {
+    const newContest = await prisma.$transaction(async (tx: any) => {
       const contest = await tx.contest.create({
         data: {
           collegeId,
@@ -87,7 +86,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log admin activity
       await tx.activityLog.create({
         data: {
           collegeId,
@@ -125,7 +123,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const contest = await tx.contest.update({
         where: { id: contestId },
         data: {
@@ -169,7 +167,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       const contest = await tx.contest.delete({
         where: { id: contestId },
       });

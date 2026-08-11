@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
@@ -12,27 +11,24 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing collegeId parameter' }, { status: 400 });
     }
 
-    // Get all branches
     const branches = await prisma.branch.findMany({
       where: { collegeId },
     });
-    const branchIds = branches.map((b) => b.id);
+    const branchIds = branches.map((b: any) => b.id);
 
-    // Get all batches
     const batches = await prisma.batch.findMany({
       where: { branchId: { in: branchIds } },
     });
-    const batchIds = batches.map((b) => b.id);
+    const batchIds = batches.map((b: any) => b.id);
 
-    // Get students
     const students = await prisma.student.findMany({
       where: { batchId: { in: batchIds } },
     });
 
     const totalStudents = students.length;
-    const activeStudents = students.filter((s) => s.status === 'Activated').length;
-    const studentsWorking = students.filter((s) => s.status === 'Working').length;
-    const notActivatedStudents = students.filter((s) => s.status === 'Not Activated').length;
+    const activeStudents = students.filter((s: any) => s.status === 'Activated').length;
+    const studentsWorking = students.filter((s: any) => s.status === 'Working').length;
+    const notActivatedStudents = students.filter((s: any) => s.status === 'Not Activated').length;
 
     const statusDistribution = [
       { name: 'Not Activated', value: notActivatedStudents, color: '#f59e0b' },
@@ -41,14 +37,14 @@ export async function GET(request: Request) {
     ];
 
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const activityTrend = days.map((day, idx) => ({
+    const activityTrend = days.map((day: any, idx: number) => ({
       day,
       students: Math.max(0, Math.round(totalStudents * (0.3 + idx * 0.1))),
       submissions: Math.max(0, Math.round(totalStudents * (0.8 + idx * 0.2))),
     }));
 
     const branchDistribution = await Promise.all(
-      branches.map(async (branch) => {
+      branches.map(async (branch: any) => {
         const bBatches = batches.filter((b: any) => b.branchId === branch.id);
         const bBatchIds = bBatches.map((b: any) => b.id);
         const bStudentsCount = students.filter((s: any) => bBatchIds.includes(s.batchId)).length;
@@ -67,7 +63,7 @@ export async function GET(request: Request) {
       take: 10,
     });
 
-    const formattedActivities = recentActivities.map((act) => ({
+    const formattedActivities = recentActivities.map((act: any) => ({
       id: act.id,
       collegeId: act.collegeId,
       type: act.type,

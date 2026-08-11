@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -27,7 +26,6 @@ export async function GET(request: Request) {
     });
 
     if (!settings) {
-      // Find first branch to set default if available
       const firstBranch = await prisma.branch.findFirst({
         where: { collegeId },
       });
@@ -66,7 +64,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const settings = await tx.collegeSettings.upsert({
         where: { collegeId },
         update: parsed.data,

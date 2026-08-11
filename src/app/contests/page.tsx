@@ -21,20 +21,16 @@ import toast from 'react-hot-toast';
 export default function ContestsPage() {
   const { college } = useAuth();
 
-  // Data State
   const [contests, setContests] = useState<Contest[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [problems, setProblems] = useState<Problem[]>([]);
 
-  // Filters
   const [statusFilter, setStatusFilter] = useState<'All' | 'Upcoming' | 'Running' | 'Completed'>('All');
 
-  // Modals
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [deletingContest, setDeletingContest] = useState<Contest | null>(null);
 
-  // Form Fields
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState('');

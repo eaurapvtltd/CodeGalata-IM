@@ -13,8 +13,6 @@ export async function POST() {
 
     logger.info('Initializing and seeding PostgreSQL database with CodeGalatta demo records...');
 
-    // 1. Create College
-    // Password hash of SHA-256 hash of empty string: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     const clientHashedPassword = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
     const bcryptPassword = await bcrypt.hash(clientHashedPassword, 10);
 
@@ -28,10 +26,9 @@ export async function POST() {
 
     const collegeId = college.id;
 
-    // 2. Create Branches
     const STATIC_BRANCHES = ['CSE', 'AI', 'AIML', 'ECE', 'EEE', 'Mechanical', 'Civil'];
     const branches = await Promise.all(
-      STATIC_BRANCHES.map((bName) =>
+      STATIC_BRANCHES.map((bName: any) =>
         prisma.branch.create({
           data: {
             collegeId,
@@ -44,7 +41,6 @@ export async function POST() {
     const cseBranch = branches.find((b: any) => b.branchName === 'CSE')!;
     const aiBranch = branches.find((b: any) => b.branchName === 'AI')!;
 
-    // 3. Create Batches
     const batchCseA = await prisma.batch.create({
       data: {
         branchId: cseBranch.id,
@@ -66,7 +62,6 @@ export async function POST() {
       },
     });
 
-    // 4. Create Students
     const demoStudents = [
       {
         batchId: batchCseA.id,
@@ -115,7 +110,7 @@ export async function POST() {
     ];
 
     await Promise.all(
-      demoStudents.map((st) =>
+      demoStudents.map((st: any) =>
         prisma.student.create({
           data: {
             ...st,
@@ -127,7 +122,6 @@ export async function POST() {
       )
     );
 
-    // 5. Create Problems
     const prob1 = await prisma.problem.create({
       data: {
         collegeId,
@@ -144,7 +138,7 @@ export async function POST() {
         hiddenTestCases: '3 2 4\n6 -> 1 2',
         languages: ['C (GCC 9.2.0)', 'C++', 'Java', 'Python 3'],
         defaultCode: {
-          'C (GCC 9.2.0)': '#include <stdio.h>\n\nint main() {\n    // Type your Solution\n    return 0;\n}',
+          'C (GCC 9.2.0)': '#include <stdio.h>\n\nint main() {\n    return 0;\n}',
         },
         topics: ['Arrays & Hashing'],
         companies: ['Google', 'Amazon'],
@@ -166,14 +160,13 @@ export async function POST() {
         explanation: 'The answer is "abc", with length of 3.',
         languages: ['C (GCC 9.2.0)', 'C++', 'Java', 'Python 3'],
         defaultCode: {
-          'C (GCC 9.2.0)': '#include <stdio.h>\n\nint main() {\n    // Type your Solution\n    return 0;\n}',
+          'C (GCC 9.2.0)': '#include <stdio.h>\n\nint main() {\n    return 0;\n}',
         },
         topics: ['Strings'],
         companies: ['Google'],
       },
     });
 
-    // 6. Create Assignment
     await prisma.assignment.create({
       data: {
         collegeId,
@@ -187,7 +180,6 @@ export async function POST() {
       },
     });
 
-    // 7. Create Contest
     await prisma.contest.create({
       data: {
         collegeId,
@@ -201,7 +193,6 @@ export async function POST() {
       },
     });
 
-    // 8. Create Timed Practice
     await prisma.timedPractice.create({
       data: {
         collegeId,
@@ -214,7 +205,6 @@ export async function POST() {
       },
     });
 
-    // 9. Create Settings
     await prisma.collegeSettings.create({
       data: {
         collegeId,
@@ -227,7 +217,6 @@ export async function POST() {
       },
     });
 
-    // 10. Create Faculty
     const fac1 = await prisma.facultyMember.create({
       data: {
         collegeId,
@@ -262,7 +251,6 @@ export async function POST() {
       },
     });
 
-    // 11. Create Chat Messages
     const chatMessages = [
       {
         collegeId,
@@ -294,14 +282,13 @@ export async function POST() {
     ];
 
     await Promise.all(
-      chatMessages.map((msg) =>
+      chatMessages.map((msg: any) =>
         prisma.facultyChatMessage.create({
           data: msg,
         })
       )
     );
 
-    // 12. Create Activities
     await prisma.activity.create({
       data: {
         collegeId,
@@ -329,7 +316,6 @@ export async function POST() {
       },
     });
 
-    // 13. Create Logs
     await prisma.activityLog.create({
       data: {
         collegeId,

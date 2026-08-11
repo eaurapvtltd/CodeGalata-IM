@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -28,7 +27,7 @@ export async function GET(request: Request) {
       const branches = await prisma.branch.findMany({
         where: { collegeId },
       });
-      const branchIds = branches.map((b) => b.id);
+      const branchIds = branches.map((b: any) => b.id);
       
       const list = await prisma.batch.findMany({
         where: { branchId: { in: branchIds } },
@@ -55,7 +54,6 @@ export async function POST(request: Request) {
 
     const { collegeId, branchId, batchName } = parsed.data;
 
-    // Check if batch name already exists in this branch
     const existing = await prisma.batch.findFirst({
       where: {
         branchId,
@@ -67,7 +65,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Batch "${batchName}" already exists in this branch.` }, { status: 409 });
     }
 
-    const newBatch = await prisma.$transaction(async (tx) => {
+    const newBatch = await prisma.$transaction(async (tx: any) => {
       const batch = await tx.batch.create({
         data: {
           branchId,
@@ -75,7 +73,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Create activity logs
       await tx.activityLog.create({
         data: {
           collegeId,

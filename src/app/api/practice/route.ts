@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -27,7 +26,7 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    const formatted = list.map((p) => ({
+    const formatted = list.map((p: any) => ({
       id: p.id,
       collegeId: p.collegeId,
       title: p.title,
@@ -62,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const newPractice = await prisma.$transaction(async (tx) => {
+    const newPractice = await prisma.$transaction(async (tx: any) => {
       const practice = await tx.timedPractice.create({
         data: {
           collegeId,
@@ -75,7 +74,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Log activity
       await tx.activityLog.create({
         data: {
           collegeId,
@@ -106,7 +104,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.timedPractice.delete({
         where: { id },
       });

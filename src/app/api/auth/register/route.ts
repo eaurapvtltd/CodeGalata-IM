@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
@@ -24,7 +23,6 @@ export async function POST(request: Request) {
 
     const { collegeName, collegeEmail, password } = parsed.data;
 
-    // Check if college email is already in use
     const existingCollege = await prisma.college.findUnique({
       where: { collegeEmail: collegeEmail.toLowerCase() },
     });
@@ -33,12 +31,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'A college with this email is already registered.' }, { status: 409 });
     }
 
-    // Hash the password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create college and seed default branches
-    const newCollege = await prisma.$transaction(async (tx) => {
+    const newCollege = await prisma.$transaction(async (tx: any) => {
       const college = await tx.college.create({
         data: {
           collegeName,
@@ -47,7 +43,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Create static branches
       const branchPromises = STATIC_BRANCHES.map((bName) =>
         tx.branch.create({
           data: {
@@ -59,7 +54,6 @@ export async function POST(request: Request) {
 
       await Promise.all(branchPromises);
 
-      // Create default settings
       await tx.collegeSettings.create({
         data: {
           collegeId: college.id,
@@ -69,7 +63,6 @@ export async function POST(request: Request) {
         },
       });
 
-      // Create activity logs
       await tx.activityLog.create({
         data: {
           collegeId: college.id,

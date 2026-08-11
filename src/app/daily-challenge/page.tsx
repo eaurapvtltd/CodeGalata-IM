@@ -135,14 +135,7 @@ export default function DailyChallengePage() {
   const todayDayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % DAILY_PROBLEMS.length;
   const currentDailyChallenge = DAILY_PROBLEMS[todayDayIndex];
 
-  // History list of past daily challenges
-  const historyChallenges: DailyProblem[] = DAILY_PROBLEMS.map((prob, idx) => {
-    const daysAgo = (todayDayIndex - idx + DAILY_PROBLEMS.length) % DAILY_PROBLEMS.length;
-    let label = 'Today';
-    if (daysAgo === 1) label = 'Yesterday';
-    else if (daysAgo > 1) label = `${daysAgo} days ago`;
-    return { ...prob, dateLabel: label };
-  }).filter(p => p.dateLabel !== 'Today');
+
 
   // Real-time countdown timer to midnight reset
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -208,7 +201,7 @@ export default function DailyChallengePage() {
     }
   };
 
-  // Comprehensive Multi-Approach Solution Data
+  // Solution approaches
   const solutionApproaches: Record<ApproachType, {
     name: string;
     badge: string;
@@ -561,15 +554,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
             A new challenge every day to keep your streak alive and your skills sharp.
           </p>
 
-          <div className="pt-2">
-            <button
-              onClick={handleSendEmailNotification}
-              className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all inline-flex items-center gap-2 cursor-pointer"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Notify Students via Email</span>
-            </button>
-          </div>
+
         </div>
 
         {/* Main Grid Section */}
@@ -788,89 +773,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
 
         </div>
 
-        {/* Daily Challenge History & Solved Analytics Section */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-            <div>
-              <h3 className="text-lg font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
-                <History className="w-5 h-5 text-emerald-500" />
-                <span>Daily Challenge History & Solved Analytics</span>
-              </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Explore past daily challenges, member completion counts, and full multi-language solutions.
-              </p>
-            </div>
 
-            <button
-              onClick={handleSendEmailNotification}
-              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2 self-start sm:self-center shrink-0 cursor-pointer"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Email Today&apos;s Challenge</span>
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left whitespace-nowrap">
-              <thead className="bg-zinc-50 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase font-semibold border-b border-zinc-200 dark:border-zinc-800">
-                <tr>
-                  <th className="px-5 py-3.5">Date</th>
-                  <th className="px-5 py-3.5">Challenge Title</th>
-                  <th className="px-5 py-3.5">Difficulty</th>
-                  <th className="px-5 py-3.5">Reward XP</th>
-                  <th className="px-5 py-3.5">Members Solved</th>
-                  <th className="px-5 py-3.5">Accuracy Rate</th>
-                  <th className="px-5 py-3.5">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
-                {historyChallenges.map((item) => (
-                  <tr key={item.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
-                    <td className="px-5 py-4 font-mono font-bold text-zinc-500">
-                      {item.dateLabel}
-                    </td>
-                    <td className="px-5 py-4 font-extrabold text-zinc-900 dark:text-white">
-                      {item.title}
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        item.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
-                        item.difficulty === 'Medium' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
-                        'bg-rose-500/10 text-rose-500 border border-rose-500/20'
-                      }`}>
-                        {item.difficulty}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 font-mono font-bold text-amber-600 dark:text-amber-400">
-                      +{item.rewardXp} XP
-                    </td>
-                    <td className="px-5 py-4 font-mono font-bold text-zinc-900 dark:text-white">
-                      <div className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>{item.solvedCount.toLocaleString()} members</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                      {item.accuracyPct}%
-                    </td>
-                    <td className="px-5 py-4">
-                      <button
-                        onClick={() => {
-                          setSelectedApproach('optimal');
-                          setIsSolutionModalOpen(true);
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-600 hover:text-white text-zinc-700 dark:text-zinc-300 font-bold text-[11px] transition-all flex items-center gap-1 cursor-pointer"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>View Solution</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
 
         {/* Modal 1: Solve Challenge Code Runner Workspace */}
         {isSolveModalOpen && (
