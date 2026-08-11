@@ -4,14 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   Trophy, 
   Code2, 
-  Coins, 
-  Sparkles, 
   TrendingUp, 
   ChevronRight, 
   Award,
   Crown,
   Medal,
-  Layers,
   X
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -25,6 +22,74 @@ export interface TopCoder {
   problemsSolved: number;
   avatar: string;
   badge: string;
+}
+
+{/* Laurel Wreath Badge Component matching reference design 100% */}
+function LaurelWreathBadge({ rank }: { rank: number }) {
+  if (rank === 1) {
+    return (
+      <div className="relative flex items-center justify-center">
+        {/* Left Laurel Branch Leaves */}
+        <div className="absolute -left-6 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-end rotate-[-20deg] z-0">
+          <span className="w-3.5 h-2 bg-amber-400 rounded-full transform -rotate-45 shadow-2xs" />
+          <span className="w-4 h-2 bg-amber-400 rounded-full transform -rotate-15 shadow-2xs" />
+          <span className="w-3.5 h-2 bg-amber-400 rounded-full transform rotate-15 shadow-2xs" />
+        </div>
+        {/* Right Laurel Branch Leaves */}
+        <div className="absolute -right-6 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-start rotate-[20deg] z-0">
+          <span className="w-3.5 h-2 bg-amber-400 rounded-full transform rotate-45 shadow-2xs" />
+          <span className="w-4 h-2 bg-amber-400 rounded-full transform rotate-15 shadow-2xs" />
+          <span className="w-3.5 h-2 bg-amber-400 rounded-full transform -rotate-15 shadow-2xs" />
+        </div>
+        {/* Gold Number 1 Badge */}
+        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-amber-950 font-black text-lg border-2 border-white dark:border-zinc-800 shadow-lg flex items-center justify-center font-mono relative z-10">
+          1
+        </div>
+      </div>
+    );
+  }
+  if (rank === 2) {
+    return (
+      <div className="relative flex items-center justify-center">
+        {/* Left Laurel Branch Leaves */}
+        <div className="absolute -left-5 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-end rotate-[-20deg] z-0">
+          <span className="w-3 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform -rotate-45" />
+          <span className="w-3.5 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform -rotate-15" />
+          <span className="w-3 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform rotate-15" />
+        </div>
+        {/* Right Laurel Branch Leaves */}
+        <div className="absolute -right-5 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-start rotate-[20deg] z-0">
+          <span className="w-3 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform rotate-45" />
+          <span className="w-3.5 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform rotate-15" />
+          <span className="w-3 h-1.5 bg-slate-300 dark:bg-zinc-500 rounded-full transform -rotate-15" />
+        </div>
+        {/* Silver Number 2 Badge */}
+        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-slate-300 via-zinc-100 to-slate-200 text-zinc-900 border-2 border-white dark:border-zinc-800 flex items-center justify-center font-black text-sm shadow-md font-mono relative z-10">
+          2
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="relative flex items-center justify-center">
+      {/* Left Laurel Branch Leaves */}
+      <div className="absolute -left-5 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-end rotate-[-20deg] z-0">
+        <span className="w-3 h-1.5 bg-amber-700 rounded-full transform -rotate-45" />
+        <span className="w-3.5 h-1.5 bg-amber-700 rounded-full transform -rotate-15" />
+        <span className="w-3 h-1.5 bg-amber-700 rounded-full transform rotate-15" />
+      </div>
+      {/* Right Laurel Branch Leaves */}
+      <div className="absolute -right-5 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-start rotate-[20deg] z-0">
+        <span className="w-3 h-1.5 bg-amber-700 rounded-full transform rotate-45" />
+        <span className="w-3.5 h-1.5 bg-amber-700 rounded-full transform rotate-15" />
+        <span className="w-3 h-1.5 bg-amber-700 rounded-full transform -rotate-15" />
+      </div>
+      {/* Bronze Number 3 Badge */}
+      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-700 via-amber-600 to-amber-800 text-white border-2 border-white dark:border-zinc-800 flex items-center justify-center font-black text-sm shadow-md font-mono relative z-10">
+        3
+      </div>
+    </div>
+  );
 }
 
 export function WeeklyStudentLeaderboard() {
@@ -54,6 +119,7 @@ export function WeeklyStudentLeaderboard() {
     fetchLeaderboard();
   }, [college]);
 
+  {/* High quality 3D avatars matching reference image 100% */}
   const rank1 = topCoders.find(c => c.rank === 1) || {
     rank: 1,
     id: '1',
@@ -61,7 +127,7 @@ export function WeeklyStudentLeaderboard() {
     college: 'Sri Eshwar College of Engineering',
     xp: 2450,
     problemsSolved: 136,
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ArjunSharma3D&top=shortHairShortFlat&hairColor=black&clothing=hoodie&clothingColor=green&skinColor=edb98a',
     badge: 'Rank 1'
   };
 
@@ -72,7 +138,7 @@ export function WeeklyStudentLeaderboard() {
     college: 'PSG College of Technology',
     xp: 2180,
     problemsSolved: 118,
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=PriyaNandhini3D&top=longHairStraight&hairColor=black&clothing=overall&clothingColor=green&skinColor=edb98a',
     badge: 'Rank 2'
   };
 
@@ -83,15 +149,15 @@ export function WeeklyStudentLeaderboard() {
     college: 'VIT University, Chennai',
     xp: 1920,
     problemsSolved: 102,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KarthikBalaji3D&top=shortHairShortWaved&hairColor=black&accessories=prescription02&clothing=hoodie&clothingColor=green&skinColor=edb98a',
     badge: 'Rank 3'
   };
 
   return (
-    <div className="space-y-8 bg-gradient-to-b from-emerald-50/40 via-white to-emerald-50/20 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 p-6 sm:p-12 rounded-[36px] border border-zinc-200/80 dark:border-zinc-800 shadow-sm relative overflow-hidden">
+    <div className="space-y-8 bg-gradient-to-b from-[#f8fafc] via-white to-[#f1f5f9] dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs relative overflow-hidden">
       
       {/* Top Header Section matching reference design */}
-      <div className="text-center space-y-3 max-w-xl mx-auto">
+      <div className="text-center space-y-3 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-mono font-extrabold text-xs uppercase tracking-wider shadow-2xs">
           <Trophy className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span>WEEKLY LEADERBOARD</span>
@@ -108,229 +174,230 @@ export function WeeklyStudentLeaderboard() {
       </div>
 
       {/* 3D Stage & Podium Container */}
-      <div className="max-w-5xl mx-auto pt-8 pb-4 relative">
+      <div className="w-full max-w-5xl mx-auto pt-8 pb-6 relative">
         
-        {/* Cards Row (Rank 2, Rank 1 Elevated, Rank 3) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end relative z-10">
+        {/* 3 Columns Grid for Rank 2, Rank 1, Rank 3 Podium */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-end relative z-10">
           
-          {/* RANK 2 - LEFT PODIUM (Priya Nandhini) */}
-          <div className="bg-white dark:bg-zinc-900 rounded-[32px] p-6 border border-zinc-200/90 dark:border-zinc-800 shadow-lg relative space-y-4 hover:-translate-y-1 transition-all duration-300 order-2 md:order-1">
-            {/* Wreath Rank 2 Crown */}
-            <div className="absolute -top-7 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="relative flex items-center justify-center">
-                <svg className="w-16 h-10 text-slate-400 absolute -top-1" viewBox="0 0 100 60" fill="currentColor">
-                  <path d="M20,35 C15,25 10,20 5,22 C10,30 18,36 20,35 Z M25,25 C20,15 15,10 10,12 C15,20 23,26 25,25 Z M33,18 C30,8 24,4 20,7 C23,15 31,20 33,18 Z M42,12 C40,2 35,-2 30,1 C32,9 39,14 42,12 Z" />
-                  <path d="M80,35 C85,25 90,20 95,22 C90,30 82,36 80,35 Z M75,25 C80,15 85,10 90,12 C85,20 77,26 75,25 Z M67,18 C70,8 76,4 80,7 C77,15 69,20 67,18 Z M58,12 C60,2 65,-2 70,1 C68,9 61,14 58,12 Z" />
-                </svg>
-                <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-slate-300 via-zinc-100 to-slate-200 text-zinc-900 border-2 border-white dark:border-zinc-800 flex items-center justify-center font-black text-sm shadow-md font-mono relative z-10">
-                  2
+          {/* RANK 2 COLUMN (LEFT) */}
+          <div className="flex flex-col items-center order-2 md:order-1 w-full relative">
+            {/* Card 2 - Card sits on top of pedestal tray */}
+            <div className="w-[92%] min-h-[390px] bg-white dark:bg-zinc-900 rounded-[24px] p-6 border border-slate-200 dark:border-zinc-800 shadow-md relative flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 z-10">
+              
+              {/* Wreath Rank 2 Crown */}
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
+                <LaurelWreathBadge rank={2} />
+              </div>
+
+              <div className="text-center space-y-3 pt-5">
+                {/* 3D Avatar Circle */}
+                <div className="relative w-24 h-24 mx-auto">
+                  <img 
+                    src={rank2.avatar} 
+                    alt={rank2.studentName}
+                    className="w-24 h-24 rounded-full border-4 border-emerald-500/30 bg-emerald-50 dark:bg-zinc-800 object-cover shadow-md"
+                  />
+                </div>
+
+                {/* Rank 2 Pill */}
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-600/10 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold font-mono">
+                  <Medal className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Rank 2</span>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-base sm:text-lg text-zinc-900 dark:text-white leading-tight">
+                    {rank2.studentName}
+                  </h3>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                    {rank2.college}
+                  </p>
                 </div>
               </div>
-            </div>
 
-            <div className="text-center space-y-2 pt-4">
-              {/* Avatar Circle */}
-              <div className="relative w-20 h-20 mx-auto">
-                <img 
-                  src={rank2.avatar} 
-                  alt={rank2.studentName}
-                  className="w-20 h-20 rounded-full border-4 border-emerald-600/30 bg-emerald-50 dark:bg-zinc-800 object-cover shadow-md"
-                />
-              </div>
-
-              {/* Rank 2 Pill */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-600/10 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold font-mono">
-                <Medal className="w-3.5 h-3.5 text-slate-400" />
-                <span>Rank 2</span>
-              </div>
-
-              <div>
-                <h3 className="font-extrabold text-base text-zinc-900 dark:text-white leading-tight">
-                  {rank2.studentName}
-                </h3>
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
-                  {rank2.college}
-                </p>
-              </div>
-            </div>
-
-            {/* 2 Stats Cards */}
-            <div className="grid grid-cols-2 gap-2 text-xs pt-2">
-              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
-                <div className="flex items-center gap-1.5 text-emerald-500 mb-1">
-                  <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
-                    $
+              {/* 2 Stats Cards */}
+              <div className="grid grid-cols-2 gap-2 text-xs pt-3">
+                <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-500 mb-1">
+                    <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
+                      $
+                    </div>
+                    <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank2.xp.toLocaleString()} XP</strong>
                   </div>
-                  <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank2.xp.toLocaleString()} XP</strong>
+                  <span className="text-[10px] font-semibold text-zinc-400 block">XP Earned</span>
                 </div>
-                <span className="text-[10px] font-semibold text-zinc-400 block">XP Earned</span>
-              </div>
 
-              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
-                  <Code2 className="w-3.5 h-3.5" />
-                  <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank2.problemsSolved}</strong>
-                </div>
-                <span className="text-[10px] font-semibold text-zinc-400 block">Problems Solved</span>
-              </div>
-            </div>
-          </div>
-
-          {/* RANK 1 - CENTER ELEVATED PODIUM (Arjun Sharma) */}
-          <div className="bg-gradient-to-b from-emerald-50/70 via-white to-white dark:from-emerald-950/30 dark:via-zinc-900 dark:to-zinc-900 rounded-[36px] p-7 border-2 border-emerald-400/80 dark:border-emerald-500/50 shadow-2xl relative space-y-4 hover:-translate-y-2 transition-all duration-300 order-1 md:order-2 scale-105 z-10">
-            
-            {/* Wreath Rank 1 Gold Crown */}
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="relative flex items-center justify-center">
-                <svg className="w-20 h-12 text-amber-500 absolute -top-1" viewBox="0 0 100 60" fill="currentColor">
-                  <path d="M20,35 C15,25 10,20 5,22 C10,30 18,36 20,35 Z M25,25 C20,15 15,10 10,12 C15,20 23,26 25,25 Z M33,18 C30,8 24,4 20,7 C23,15 31,20 33,18 Z M42,12 C40,2 35,-2 30,1 C32,9 39,14 42,12 Z" />
-                  <path d="M80,35 C85,25 90,20 95,22 C90,30 82,36 80,35 Z M75,25 C80,15 85,10 90,12 C85,20 77,26 75,25 Z M67,18 C70,8 76,4 80,7 C77,15 69,20 67,18 Z M58,12 C60,2 65,-2 70,1 C68,9 61,14 58,12 Z" />
-                </svg>
-                <div className="w-13 h-13 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-amber-950 font-black text-lg border-2 border-white dark:border-zinc-800 shadow-xl flex items-center justify-center font-mono relative z-10">
-                  1
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center space-y-2 pt-5">
-              {/* Avatar Circle with Green Ring */}
-              <div className="relative w-24 h-24 mx-auto">
-                <div className="absolute -inset-1.5 rounded-full bg-emerald-500/30 blur-sm animate-pulse" />
-                <img 
-                  src={rank1.avatar} 
-                  alt={rank1.studentName}
-                  className="relative w-24 h-24 rounded-full border-4 border-emerald-500 bg-emerald-50 dark:bg-zinc-800 object-cover shadow-xl"
-                />
-              </div>
-
-              {/* Rank 1 Green Crown Pill */}
-              <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-emerald-600 text-white text-xs font-black font-mono shadow-md">
-                <Crown className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
-                <span>Rank 1</span>
-              </div>
-
-              <div>
-                <h3 className="font-extrabold text-lg text-zinc-900 dark:text-white leading-tight">
-                  {rank1.studentName}
-                </h3>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-extrabold mt-0.5">
-                  {rank1.college}
-                </p>
-              </div>
-            </div>
-
-            {/* 2 Stats Cards */}
-            <div className="grid grid-cols-2 gap-2.5 text-xs pt-2">
-              <div className="p-3 rounded-2xl bg-white dark:bg-zinc-800/80 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs text-left">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
-                  <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
-                    $
+                <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
+                    <Code2 className="w-3.5 h-3.5" />
+                    <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank2.problemsSolved}</strong>
                   </div>
-                  <strong className="text-sm font-black text-zinc-900 dark:text-white font-mono">{rank1.xp.toLocaleString()} XP</strong>
+                  <span className="text-[10px] font-semibold text-zinc-400 block">Problems Solved</span>
                 </div>
-                <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 block">XP Earned</span>
               </div>
+            </div>
 
-              <div className="p-3 rounded-2xl bg-white dark:bg-zinc-800/80 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs text-left">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
-                  <Code2 className="w-4 h-4" />
-                  <strong className="text-sm font-black text-zinc-900 dark:text-white font-mono">{rank1.problemsSolved}</strong>
-                </div>
-                <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 block">Problems Solved</span>
+            {/* White 3D Step Platform Base Tray (Card sits on top) */}
+            <div className="w-full relative -mt-6 z-0 pt-6">
+              <div className="w-full h-12 bg-slate-100 dark:bg-zinc-800 rounded-[24px] border-2 border-slate-200 dark:border-zinc-700 shadow-lg flex flex-col overflow-hidden">
+                {/* Top Shelf Surface (where card rests) */}
+                <div className="h-4 bg-white dark:bg-zinc-750 border-b border-slate-200 dark:border-zinc-700" />
+                {/* Front 3D Bevel Wall */}
+                <div className="h-8 bg-gradient-to-b from-slate-100 to-slate-200 dark:from-zinc-800 dark:to-zinc-900" />
               </div>
             </div>
           </div>
 
-          {/* RANK 3 - RIGHT PODIUM (Karthik Balaji) */}
-          <div className="bg-white dark:bg-zinc-900 rounded-[32px] p-6 border border-zinc-200/90 dark:border-zinc-800 shadow-lg relative space-y-4 hover:-translate-y-1 transition-all duration-300 order-3">
-            {/* Wreath Rank 3 Bronze Crown */}
-            <div className="absolute -top-7 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="relative flex items-center justify-center">
-                <svg className="w-16 h-10 text-amber-700/80 absolute -top-1" viewBox="0 0 100 60" fill="currentColor">
-                  <path d="M20,35 C15,25 10,20 5,22 C10,30 18,36 20,35 Z M25,25 C20,15 15,10 10,12 C15,20 23,26 25,25 Z M33,18 C30,8 24,4 20,7 C23,15 31,20 33,18 Z M42,12 C40,2 35,-2 30,1 C32,9 39,14 42,12 Z" />
-                  <path d="M80,35 C85,25 90,20 95,22 C90,30 82,36 80,35 Z M75,25 C80,15 85,10 90,12 C85,20 77,26 75,25 Z M67,18 C70,8 76,4 80,7 C77,15 69,20 67,18 Z M58,12 C60,2 65,-2 70,1 C68,9 61,14 58,12 Z" />
-                </svg>
-                <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-700 via-amber-600 to-amber-800 text-white border-2 border-white dark:border-zinc-800 flex items-center justify-center font-black text-sm shadow-md font-mono relative z-10">
-                  3
+          {/* RANK 1 COLUMN (CENTER ELEVATED) */}
+          <div className="flex flex-col items-center order-1 md:order-2 w-full z-20 relative">
+            {/* Card 1 - Card sits on top of pedestal tray */}
+            <div className="w-[92%] min-h-[450px] bg-gradient-to-b from-[#f0fdf4] via-white to-white dark:from-emerald-950/40 dark:via-zinc-900 dark:to-zinc-900 rounded-[28px] p-7 border-2 border-[#86efac] dark:border-emerald-500/60 shadow-2xl relative flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+              
+              {/* Wreath Rank 1 Gold Crown */}
+              <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20">
+                <LaurelWreathBadge rank={1} />
+              </div>
+
+              <div className="text-center space-y-3 pt-6">
+                {/* 3D Avatar Circle */}
+                <div className="relative w-28 h-28 mx-auto">
+                  <div className="absolute -inset-1.5 rounded-full bg-emerald-500/30 blur-xs animate-pulse" />
+                  <img 
+                    src={rank1.avatar} 
+                    alt={rank1.studentName}
+                    className="relative w-28 h-28 rounded-full border-4 border-emerald-500 bg-emerald-50 dark:bg-zinc-800 object-cover shadow-xl"
+                  />
+                </div>
+
+                {/* Rank 1 Green Crown Pill */}
+                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-black font-mono shadow-md">
+                  <Crown className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
+                  <span>Rank 1</span>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-xl text-zinc-900 dark:text-white leading-tight">
+                    {rank1.studentName}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-extrabold">
+                    {rank1.college}
+                  </p>
                 </div>
               </div>
-            </div>
 
-            <div className="text-center space-y-2 pt-4">
-              {/* Avatar Circle */}
-              <div className="relative w-20 h-20 mx-auto">
-                <img 
-                  src={rank3.avatar} 
-                  alt={rank3.studentName}
-                  className="w-20 h-20 rounded-full border-4 border-amber-600/30 bg-amber-50 dark:bg-zinc-800 object-cover shadow-md"
-                />
-              </div>
-
-              {/* Rank 3 Pill */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-900/10 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-bold font-mono">
-                <Award className="w-3.5 h-3.5 text-amber-600" />
-                <span>Rank 3</span>
-              </div>
-
-              <div>
-                <h3 className="font-extrabold text-base text-zinc-900 dark:text-white leading-tight">
-                  {rank3.studentName}
-                </h3>
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
-                  {rank3.college}
-                </p>
-              </div>
-            </div>
-
-            {/* 2 Stats Cards */}
-            <div className="grid grid-cols-2 gap-2 text-xs pt-2">
-              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
-                <div className="flex items-center gap-1.5 text-emerald-500 mb-1">
-                  <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
-                    $
+              {/* 2 Stats Cards */}
+              <div className="grid grid-cols-2 gap-2.5 text-xs pt-3">
+                <div className="p-3 rounded-2xl bg-white dark:bg-zinc-800/80 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
+                    <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
+                      $
+                    </div>
+                    <strong className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white font-mono">{rank1.xp.toLocaleString()} XP</strong>
                   </div>
-                  <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank3.xp.toLocaleString()} XP</strong>
+                  <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 block">XP Earned</span>
                 </div>
-                <span className="text-[10px] font-semibold text-zinc-400 block">XP Earned</span>
-              </div>
 
-              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
-                  <Code2 className="w-3.5 h-3.5" />
-                  <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank3.problemsSolved}</strong>
+                <div className="p-3 rounded-2xl bg-white dark:bg-zinc-800/80 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
+                    <Code2 className="w-4 h-4" />
+                    <strong className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white font-mono">{rank1.problemsSolved}</strong>
+                  </div>
+                  <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 block">Problems Solved</span>
                 </div>
-                <span className="text-[10px] font-semibold text-zinc-400 block">Problems Solved</span>
+              </div>
+            </div>
+
+            {/* Green 3D Step Platform Base Tray (Card sits on top) */}
+            <div className="w-full relative -mt-6 z-0 pt-6">
+              <div className="w-full h-14 bg-[#16a34a] dark:bg-emerald-600 rounded-[26px] border-2 border-[#22c55e] shadow-xl flex flex-col relative">
+                {/* Light Green Top Shelf Surface (visible around card base) */}
+                <div className="h-4 bg-[#bbf7d0] dark:bg-emerald-800/80 rounded-t-[24px] border-b border-[#22c55e]" />
+                {/* Front 3D Green Bevel Wall */}
+                <div className="h-10 bg-gradient-to-b from-[#16a34a] to-[#15803d] rounded-b-[24px] flex items-center justify-center relative">
+                  {/* Hexagon Shield Badge with Green Trophy Icon */}
+                  <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-[#16a34a] text-[#16a34a] flex items-center justify-center shadow-lg transform -translate-y-3">
+                    <Trophy className="w-6 h-6 text-[#16a34a] fill-[#16a34a]/20" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-        </div>
+          {/* RANK 3 COLUMN (RIGHT) */}
+          <div className="flex flex-col items-center order-3 w-full relative">
+            {/* Card 3 - Card sits on top of pedestal tray */}
+            <div className="w-[92%] min-h-[390px] bg-white dark:bg-zinc-900 rounded-[24px] p-6 border border-slate-200 dark:border-zinc-800 shadow-md relative flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 z-10">
+              
+              {/* Wreath Rank 3 Crown */}
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
+                <LaurelWreathBadge rank={3} />
+              </div>
 
-        {/* Connected 3D Stage Pedestals Base (Matching reference design) */}
-        <div className="hidden md:grid grid-cols-3 gap-6 items-start -mt-5 relative z-0">
-          
-          {/* Rank 2 Pedestal Step */}
-          <div className="h-8 bg-gradient-to-b from-zinc-200 via-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 rounded-b-[28px] border-t-2 border-zinc-300 dark:border-zinc-700 shadow-md" />
+              <div className="text-center space-y-3 pt-5">
+                {/* 3D Avatar Circle */}
+                <div className="relative w-24 h-24 mx-auto">
+                  <img 
+                    src={rank3.avatar} 
+                    alt={rank3.studentName}
+                    className="w-24 h-24 rounded-full border-4 border-amber-600/30 bg-amber-50 dark:bg-zinc-800 object-cover shadow-md"
+                  />
+                </div>
 
-          {/* Rank 1 Pedestal Step (Green 3D Step Platform with Hexagon Trophy Emblem) */}
-          <div className="relative">
-            <div className="h-12 bg-gradient-to-b from-emerald-500 via-emerald-600 to-emerald-700 rounded-b-[32px] border-t-4 border-emerald-300 shadow-xl flex items-center justify-center">
-              {/* Front-Center Pedestal Trophy Emblem Badge */}
-              <div className="w-13 h-13 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-emerald-400 text-emerald-500 flex items-center justify-center shadow-xl transform translate-y-3">
-                <Trophy className="w-7 h-7 text-emerald-500 fill-emerald-500/20" />
+                {/* Rank 3 Pill */}
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-900/10 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-bold font-mono">
+                  <Award className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Rank 3</span>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-base sm:text-lg text-zinc-900 dark:text-white leading-tight">
+                    {rank3.studentName}
+                  </h3>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                    {rank3.college}
+                  </p>
+                </div>
+              </div>
+
+              {/* 2 Stats Cards */}
+              <div className="grid grid-cols-2 gap-2 text-xs pt-3">
+                <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-500 mb-1">
+                    <div className="w-4 h-4 rounded-full bg-amber-400 border border-amber-500 flex items-center justify-center text-[9px] font-black text-amber-950">
+                      $
+                    </div>
+                    <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank3.xp.toLocaleString()} XP</strong>
+                  </div>
+                  <span className="text-[10px] font-semibold text-zinc-400 block">XP Earned</span>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-left">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-1">
+                    <Code2 className="w-3.5 h-3.5" />
+                    <strong className="text-xs font-black text-zinc-900 dark:text-white font-mono">{rank3.problemsSolved}</strong>
+                  </div>
+                  <span className="text-[10px] font-semibold text-zinc-400 block">Problems Solved</span>
+                </div>
+              </div>
+            </div>
+
+            {/* White 3D Step Platform Base Tray (Card sits on top) */}
+            <div className="w-full relative -mt-6 z-0 pt-6">
+              <div className="w-full h-12 bg-slate-100 dark:bg-zinc-800 rounded-[24px] border-2 border-slate-200 dark:border-zinc-700 shadow-lg flex flex-col overflow-hidden">
+                {/* Top Shelf Surface (where card rests) */}
+                <div className="h-4 bg-white dark:bg-zinc-750 border-b border-slate-200 dark:border-zinc-700" />
+                {/* Front 3D Bevel Wall */}
+                <div className="h-8 bg-gradient-to-b from-slate-100 to-slate-200 dark:from-zinc-800 dark:to-zinc-900" />
               </div>
             </div>
           </div>
-
-          {/* Rank 3 Pedestal Step */}
-          <div className="h-8 bg-gradient-to-b from-zinc-200 via-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 rounded-b-[28px] border-t-2 border-zinc-300 dark:border-zinc-700 shadow-md" />
 
         </div>
 
       </div>
 
       {/* Bottom Callout Banner Bar matching reference image */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/70 dark:bg-zinc-900/90 border border-emerald-200/80 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-5xl mx-auto shadow-2xs">
+      <div className="p-5 rounded-2xl bg-emerald-50/70 dark:bg-zinc-900/90 border border-emerald-200/80 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-5xl mx-auto shadow-2xs">
         <div className="flex items-center gap-3.5 text-center sm:text-left">
           <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-mono text-lg font-black shrink-0 shadow-md">
             &lt;/&gt;
